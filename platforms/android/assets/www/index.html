@@ -60,7 +60,7 @@
 }
 .canvousdiv
 {
-top: 17%;
+top: auto;
 /* left: 21%; */
 /* width: 59%; */
 height: 100;
@@ -93,37 +93,40 @@ align-items: flex-start;
   <title>DICOM VIEWER HTML5</title>
     </head>
     <body ng-app="dvh">
-		<div class="bar bar-header bar-dark">
-		  <h1 class="title">DVH</h1>
-		  <!--<input type="file" class="button" id="file"value="file" /> -->
-		  <input ng-hide ="true" type="text" class="button" id="file" value="http://x.babymri.org/?53320924&.dcm" /> 
-		  <input type="button" class="button" id="urlbtn"value="file" /> 
-		</div> 
-		 <div class="tabs-striped tabs-top tabs-background-dark tabs-color-light">
-			<div class="tabs">
-				<div class="tab-item" ng-click="SelectedMouseTool='circle'" >circle</div>
-				<div class="tab-item" ng-click="SelectedMouseTool='line'" >line</div>
-				<div class="tab-item" ng-click="SelectedMouseTool='rectangular'">rectangular</div>
-				<div class="tab-item" ng-click="SelectedMouseTool='ellipse'" >ellipse</div>
-				<div class="tab-item" ng-click="SelectedMouseTool='WindowLevel'"> WindowLevel</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='plain'" >plain</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='invplain'" >invplain</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='rainbow'" >rainbow</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='hot'" >hot</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='sharpen'" >sharpen</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='sobel'" >sobel</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='reset image'" >reset image</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='clearAnnotation'" >clearAnnotation</div>
-				<div class="tab-item" ng-click="SelectedButtonTool='clear'" >clear</div>
+		<ion-header-bar align-title="center" class="bar-dark">
+			<div class="buttons">
+				<button class="button" ng-click=""></button>
 			</div>
-		  </div>
-		  <div class = "canvousdiv" >
-			<div style="margin-left: auto;margin-right: auto;display: table;height: 100%;">
-				<div style="display: table-cell;vertical-align: middle;">
-					<dicomviewer class ="dicom" fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn" style=""></dicomviewer>
-				</div> 
+			<h1 class="title">DVH</h1>
+			<div class="buttons">
+				<button class="button" id="urlbtn" >Open</button>
 			</div>
-		</div>
-
+		</ion-header-bar>
+		<input ng-hide ="true" type="text" class="button" id="file" value="http://x.babymri.org/?53320924&.dcm" /> 
+		<ion-content overflow-scroll="true" scroll="false">
+			<div class="row has-header " style="background-color:black">
+			  <div class="col "><img src="icons/cir.png" ng-click="SelectedMouseTool='circle'"/></div>
+			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line'"/></div>
+			  <div class="col "><img src="icons/rect.png" ng-click="SelectedMouseTool='rectangular'"/></div>
+			  <div class="col "><img src="icons/ele.png" ng-click="SelectedMouseTool='ellipse'"/></div>
+			  <div class="col "><img src="icons/wl.png" ng-click="SelectedMouseTool='WindowLevel'"/></div>
+			  <div class="col "><img src="icons/plane.png" ng-click="SelectedButtonTool='plain'"/></div>
+			  <div class="col "><img src="icons/Ivt.png" ng-click="SelectedButtonTool='invplain'"/></div>
+			  <div class="col "><img src="icons/hot.png" ng-click="SelectedButtonTool='hot'"/></div>
+			  <div class="col "><img src="icons/rbow.png" ng-click="SelectedButtonTool='rainbow'"/></div>
+			  <div class="col "><img src="icons/snr.png" ng-click="SelectedButtonTool='sharpen'"/></div>
+			  <div class="col "><img src="icons/ed.png" ng-click="SelectedButtonTool='sobel'"/></div>
+			  <div class="col "><img src="icons/rset.png" ng-click="SelectedButtonTool='reset image'"/></div>
+			  <div class="col "><img src="icons/clrann.png" ng-click="SelectedButtonTool='clearAnnotation'"/></div>
+			  <div class="col "><img src="icons/clr.png" ng-click="SelectedButtonTool='clear'"/></div>
+			</div>
+			<div class = "row" style="padding-top: 15px;">
+				<div style="margin-left: auto;margin-right: auto;display: table;height: 100%;">
+					<div style="display: table-cell;vertical-align: middle;">
+						<dicomviewer class ="dicom" fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn" style=""></dicomviewer>
+					</div> 
+				</div>
+			</div>
+		</ion-content>
     </body>
 </html>
