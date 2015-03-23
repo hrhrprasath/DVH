@@ -275,11 +275,11 @@ align-items: flex-start;
 				<div class="item item-divider">
 				 Folders:
 				 </div>
-				<div class="item" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')">{{o.name}}</div>
+				<div class="item" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')" style="width:80%">{{o.name}}</div>
 				<div class="item item-divider">
 				 Files
 				</div>
-				<div class="item" ng-repeat="o in files" ng-click="OpenSelectedItem(o.name,'f')">{{o.name}}</div>
+				<div class="item" ng-repeat="o in files" ng-click="OpenSelectedItem(o.name,'f')" style="width:80%">{{o.name}}</div>
 			</div>
 		</ion-content>
     </body>
