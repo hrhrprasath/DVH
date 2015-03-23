@@ -217,6 +217,11 @@ align-items: flex-start;
 				//alert(name+"/"+type)
 				getActiveItem(name, type);
 				openItem(activeItemType);
+			}
+			$scope.back = function()
+			{
+				if( parentDir != null ) 
+				listDir(parentDir);
 			}			
 			});
 		</script>
@@ -235,7 +240,7 @@ align-items: flex-start;
 			</div>
 		</ion-header-bar>
 		<input ng-hide ="true" type="text" class="button" id="file" value="http://x.babymri.org/?53320924&.dcm" /> 
-		<ion-content overflow-scroll="true" scroll="false">
+		<ion-content overflow-scroll="true" scroll="false" ng-hide="explore" >
 			<div class="row has-header " style="background-color:black">
 			  <div class="col "><img src="icons/cir.png" ng-click="SelectedMouseTool='circle';"/></div>
 			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line'"/></div>
@@ -254,24 +259,28 @@ align-items: flex-start;
 			  <div class="col "><img src="icons/clrann.png" ng-click="SelectedButtonTool='clearAnnotation'"/></div>
 			  <div class="col "><img src="icons/clr.png" ng-click="SelectedButtonTool='clear'"/></div>
 			</div>
-			<div ng-hide="explore" class = "row" style="padding-top: 15px;">
+			
+			<div  class = "row" style="padding-top: 15px;">
 				<div style="margin-left: auto;margin-right: auto;display: table;height: 100%;">
 					<div style="display: table-cell;vertical-align: middle;">
 						<dicomviewer class ="dicom" fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn" style=""></dicomviewer>
 					</div> 
 				</div>
 			</div>
-			<div ng-show="explore" class = "row" style="padding-top: 15px;">
-					<div class="col">
-					 Folders:
-					 </div>
-					<div class="col button button-dark" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')">{{o.name}}</div>
-					<div class="col">
-					 Files
-					</div>
-					<div class="col button button-dark" ng-repeat="o in files" ng-click="OpenSelectedItem(o.name,'f')">{{o.name}}</div>
+		</ion-content>
+		
+		<ion-content overflow-scroll="true"  scrollbar-y="true" ng-show="explore" >
+		<div class="button button-dark" ng-click="back()" style="margin:5px;"> back </div>
+			<div class = "list" style="padding-top: 15px;">
+				<div class="item item-divider">
+				 Folders:
+				 </div>
+				<div class="item" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')">{{o.name}}</div>
+				<div class="item item-divider">
+				 Files
+				</div>
+				<div class="item" ng-repeat="o in files" ng-click="OpenSelectedItem(o.name,'f')">{{o.name}}</div>
 			</div>
-			
 		</ion-content>
     </body>
 </html>
