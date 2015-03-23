@@ -2,11 +2,9 @@
 
 <html>
     <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-		 <link rel="stylesheet" type="text/css" href="css/ionic.min.css" />
+       <meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+		<link rel="stylesheet" type="text/css" href="css/ionic.min.css" />
 		 <style>
 			.toolbtn
 			{
@@ -85,17 +83,151 @@ align-items: flex-start;
 		 </style>
         <script type="text/javascript" src="js/ionic.bundle.min.js"></script>
         <script type="text/javascript" src="js/NgDicomViewer.js"></script>
+        <script type="text/javascript" src="js/openjpeg.js"></script>
+        <script type="text/javascript" src="js/ng-cordova.min.js"></script>
         <script type="text/javascript">
-		angular.module('dvh', ['ionic','ngdicomviewer'])
+		angular.module('dvh', ['ionic','ngdicomviewer','ngCordova'])
+		.controller('ctrllll', function($scope, $cordovaFile,$ionicPlatform) {
+			//alert("platform");
+			$scope.explore =false;
+			$scope.dirs =[];
+			$scope.files =[];
+			var root = null; // File System root variable
+			var currentDir = null; // Current DirectoryEntry listed
+			var parentDir = null; // Parent of the current directory
+			var activeItem = null; // The clicked item
+			var activeItemType = null; // d-directory, f-file
+			var clipboardItem = null; // file or directory for copy or move 
+			var clipboardAction = null; // c-copy, m-move
+
+			function getFileSystem(){
+				window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,
+					function(fileSystem){ // success get file system
+						root = fileSystem.root;
+						listDir(root);
+					}, function(evt){ // error get file system
+						console.log("File System Error: "+evt.target.error.code);
+					}
+				);
+			}
+
+			function listDir(directoryEntry){
+				if( !directoryEntry.isDirectory )
+				console.log('listDir incorrect type');
+				currentDir = directoryEntry; // set current directory
+				directoryEntry.getParent(function(par){ // success get parent
+					parentDir = par; // set parent directory
+					//if( (parentDir.name == 'sdcard' && currentDir.name != 'sdcard') || parentDir.name != 'sdcard' ) 
+					//alert(parentDir.name +"  "+ currentDir.name) 
+				}, function(error){ // error get parent
+					console.log('Get parent error: '+error.code);
+				});
+				var directoryReader = directoryEntry.createReader();
+				directoryReader.readEntries(function(entries){
+					
+					var dirArr = new Array();
+					var fileArr = new Array();
+					for(var i=0; i<entries.length; ++i){ // sort entries
+						var entry = entries[i];
+						if( entry.isDirectory && entry.name[0] != '.' ) dirArr.push(entry);
+						else if( entry.isFile && entry.name[0] != '.' ) fileArr.push(entry);
+					}
+					//alert(dirArr.length +"||"+ fileArr.length);
+					$scope.$apply(function(){
+						$scope.dirs =dirArr;
+						$scope.files =fileArr;
+					});
+				}, function(error){
+					console.log('listDir readEntries error: '+error.code);
+				});
+				
+			}
+			/* read from file */
+			function readFile(fileEntry){
+				if( !fileEntry.isFile ) console.log('readFile incorrect type');
+				fileEntry.file(function(file){
+					/*var reader = new FileReader();
+					reader.onloadend = function(evt) {
+						console.log("Read as data URL");
+						console.log(evt.target.result); // show data from file into console
+					};
+					reader.readAsDataURL(file);*/
+					$scope.$apply(function(){
+						//alert(file.name);
+					try{
+						$scope.loadFile(file);
+						$scope.explore =false;
+						}
+						catch(e)
+						{
+							alert(e.message);
+						}
+					});
+				}, function(error){
+					console.log(evt.target.error.code);
+				});
+			}
+
+			/* open item */
+			function openItem(type){
+				if( type == 'd' ){
+					listDir(activeItem);
+				} else if(type == 'f'){
+					readFile(activeItem);
+				}
+			}
+
+			/* get active item  */
+			function getActiveItem(name, type){
+				if( type == 'd' && currentDir != null ){
+					currentDir.getDirectory(name, {create:false},
+						function(dir){ // success find directory
+							activeItem = dir;
+							activeItemType = type;
+						}, 
+						function(error){ // error find directory
+							console.log('Unable to find directory: '+error.code);
+						}
+					);
+				} else if(type == 'f' && currentDir != null){
+					currentDir.getFile(name, {create:false},
+						function(file){ // success find file
+							activeItem = file;
+							activeItemType = type;
+						},
+						function(error){ // error find file
+							console.log('Unable to find file: '+error.code);
+						}
+					);
+				}
+			}
+
+			/* get clipboard item for copy or move */
+			function getClipboardItem(action){
+				if( activeItem != null) {
+					clipboardItem = activeItem;
+					clipboardAction = action;
+				}
+			}
+			$ionicPlatform.ready(function() {
+				getFileSystem();
+			});
+			$scope.OpenSelectedItem = function(name,type)
+			{
+				//alert(name+"/"+type)
+				getActiveItem(name, type);
+				openItem(activeItemType);
+			}			
+			});
 		</script>
         <script type="text/javascript" src="cordova.js"></script>
     
   <title>DICOM VIEWER HTML5</title>
     </head>
-    <body ng-app="dvh">
-		<ion-header-bar align-title="center" class="bar-dark">
+    <body ng-app="dvh" ng-controller="ctrllll" >
+		<ion-header-bar align-title="center" class="bar-dark" >
 			<div class="buttons">
-				<button class="button" ng-click=""></button>
+				<button class="button" ng-click="explore =!explore">explore</button>
 			</div>
 			<h1 class="title">DVH</h1>
 			<div class="buttons">
@@ -105,13 +237,15 @@ align-items: flex-start;
 		<input ng-hide ="true" type="text" class="button" id="file" value="http://x.babymri.org/?53320924&.dcm" /> 
 		<ion-content overflow-scroll="true" scroll="false">
 			<div class="row has-header " style="background-color:black">
-			  <div class="col "><img src="icons/cir.png" ng-click="SelectedMouseTool='circle'"/></div>
+			  <div class="col "><img src="icons/cir.png" ng-click="SelectedMouseTool='circle';"/></div>
 			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line'"/></div>
 			  <div class="col "><img src="icons/rect.png" ng-click="SelectedMouseTool='rectangular'"/></div>
 			  <div class="col "><img src="icons/ele.png" ng-click="SelectedMouseTool='ellipse'"/></div>
 			  <div class="col "><img src="icons/wl.png" ng-click="SelectedMouseTool='WindowLevel'"/></div>
 			  <div class="col "><img src="icons/plane.png" ng-click="SelectedButtonTool='plain'"/></div>
 			  <div class="col "><img src="icons/Ivt.png" ng-click="SelectedButtonTool='invplain'"/></div>
+			</div>
+			<div class="row " style="background-color:black">
 			  <div class="col "><img src="icons/hot.png" ng-click="SelectedButtonTool='hot'"/></div>
 			  <div class="col "><img src="icons/rbow.png" ng-click="SelectedButtonTool='rainbow'"/></div>
 			  <div class="col "><img src="icons/snr.png" ng-click="SelectedButtonTool='sharpen'"/></div>
@@ -120,13 +254,24 @@ align-items: flex-start;
 			  <div class="col "><img src="icons/clrann.png" ng-click="SelectedButtonTool='clearAnnotation'"/></div>
 			  <div class="col "><img src="icons/clr.png" ng-click="SelectedButtonTool='clear'"/></div>
 			</div>
-			<div class = "row" style="padding-top: 15px;">
+			<div ng-hide="explore" class = "row" style="padding-top: 15px;">
 				<div style="margin-left: auto;margin-right: auto;display: table;height: 100%;">
 					<div style="display: table-cell;vertical-align: middle;">
 						<dicomviewer class ="dicom" fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn" style=""></dicomviewer>
 					</div> 
 				</div>
 			</div>
+			<div ng-show="explore" class = "row" style="padding-top: 15px;">
+					<div class="col">
+					 Folders:
+					 </div>
+					<div class="col button button-dark" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')">{{o.name}}</div>
+					<div class="col">
+					 Files
+					</div>
+					<div class="col button button-dark" ng-repeat="o in files" ng-click="OpenSelectedItem(o.name,'f')">{{o.name}}</div>
+			</div>
+			
 		</ion-content>
     </body>
 </html>

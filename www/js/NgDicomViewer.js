@@ -21,10 +21,11 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 			 scope.Tool = {'MouseBasedTools':["circle", "line", "rectangular", "ellipse", "WindowLevel"],'ButtonBasedTools':[ "plain", "invplain", "rainbow", "hot", "test", "sharpen", "sobel","threshold","reset image","clear","clearAnnotation"]};
     scope.Colours = ['red', 'lime', 'blue', 'yellow', 'orange', 'aqua', 'fuchsia', 'white', 'black',
      'gray', 'grey', 'silver', 'maroon', 'olive', 'green', 'teal', 'navy', 'purple'];
-    scope.SelectedColor = 'red';
-    scope.SelectedMouseTool = "line";
-	scope.SelectedButtonTool = "";
-    scope.RemoteFile = false;
+			scope.SelectedColor = 'red';
+			scope.SelectedMouseTool = "line";
+			scope.SelectedButtonTool = "";
+			scope.RemoteFile = false;
+			//scope.FileObjs =[];
             scope.Tag = [];
 
             scope.Rmin = 0;
@@ -244,7 +245,18 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
             }
 
             fileUtilityElement.bind('change', onFileListChanged);
-
+			$rootScope.loadFile = function (f) {
+			 //alert("Change" )
+			 //alert("Change" + newval.name)
+				var filesArray = [f];
+				clear();
+				filehandler = FileHandler.GetInstence();
+                filehandler.SetElements(angularCanvas[0], element[0], fileChangeUpdate);
+                filehandler.InitializeFiles(filesArray);
+                filehandler.SetDisplayFile(0);
+                imagehandler = filehandler.GetCurrentImageHandler();
+			 }.bind(this);
+			
             ///@End Of Dicom File Handling---------->
 
             ///Remote Dicom File Handling----------------<
