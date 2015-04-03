@@ -5,282 +5,152 @@
        <meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
 		<link rel="stylesheet" type="text/css" href="css/ionic.min.css" />
-		 <style>
-			.toolbtn
-			{
-				width:auto;
-				height:auto;
-				cursor: pointer;
-				border: 1px solid #cecece;
-				color: rgba(0,0,0,1);
-				text-align: center;
-				-o-text-overflow: ellipsis;
-				text-overflow: ellipsis;
-				background: #f5f5f5;
-				outline:none;
-				background-repeat:no-repeat;
-				background-position:center;
-			}
-			.toolbtn:hover
-			{
-				border: 1px solid #898888;
-				-webkit-box-shadow: 0 0 2px 1px rgba(0,0,0,0.5);
-				box-shadow: 0 0 2px 1px rgba(0,0,0,0.5);
-			}
 
-			.toolmbtnclicked
-			{
-				border-color:  #0185c1;
-				-webkit-box-shadow: 0 0 2px 1px rgba(0,0,0,0.5);
-				box-shadow: 0 0 2px 3px  #0185c1;
-			}
-			.toolbtnclicked
-			{
-				border-color:  red;
-				-webkit-box-shadow: 0 0 2px 1px red;
-				box-shadow: 0 0 2px 3px  red;
-			}
-			.dicom{
-	/* width: auto; */
-	/* height: auto; */
-	/* left: 50%; */
-	/* top: 50%; */
-	/* margin: 0px -50% 0px 0px; */
-	/* padding: 0px; */
-	/* display: block; */
-	position: relative;
-	/* transform: translate(-50%, -50%); */
-	display: block;
-	-webkit-align-self: center;
-	align-self: center;
-	margin-left: auto;
-	margin-right: auto;
-}
-.canvousdiv
-{
-top: auto;
-/* left: 21%; */
-/* width: 59%; */
-height: 100;
-position: absolute;
-margin: 0px;
--webkit-box-sizing: content-box;
--moz-box-sizing: content-box;
-box-sizing: content-box;
-cursor: pointer;
-border: 1px solid #898888;
-color: rgba(0,0,0,1);
-background: #f5f5f5;
--webkit-box-shadow: 0 0 2px 1px rgba(0,0,0,0.5);
-box-shadow: 0 0 2px 1px rgba(0,0,0,0.5);
-overflow: auto;
-display: -webkit-flex;
--webkit-align-items: flex-start;
-display: flex;
-align-items: flex-start;
-
-}
-		 </style>
         <script type="text/javascript" src="js/ionic.bundle.min.js"></script>
         <script type="text/javascript" src="js/NgDicomViewer.js"></script>
+        <script type="text/javascript" src="js/Explorer.js"></script>
         <script type="text/javascript" src="js/openjpeg.js"></script>
         <script type="text/javascript" src="js/ng-cordova.min.js"></script>
         <script type="text/javascript">
 		angular.module('dvh', ['ionic','ngdicomviewer','ngCordova'])
-		.controller('ctrllll', function($scope, $cordovaFile,$ionicPlatform) {
-			//alert("platform");
+		 .controller('ctrl', function($scope, $cordovaFile,$ionicPlatform,$ionicSideMenuDelegate,$rootScope) {
+			
 			$scope.explore =false;
+			$scope.showTools = true;
+			$scope.urll=false;
 			$scope.dirs =[];
 			$scope.files =[];
-			var root = null; // File System root variable
-			var currentDir = null; // Current DirectoryEntry listed
-			var parentDir = null; // Parent of the current directory
-			var activeItem = null; // The clicked item
-			var activeItemType = null; // d-directory, f-file
-			var clipboardItem = null; // file or directory for copy or move 
-			var clipboardAction = null; // c-copy, m-move
-
-			function getFileSystem(){
-				window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,
-					function(fileSystem){ // success get file system
-						root = fileSystem.root;
-						listDir(root);
-					}, function(evt){ // error get file system
-						console.log("File System Error: "+evt.target.error.code);
-					}
-				);
-			}
-
-			function listDir(directoryEntry){
-				if( !directoryEntry.isDirectory )
-				console.log('listDir incorrect type');
-				currentDir = directoryEntry; // set current directory
-				directoryEntry.getParent(function(par){ // success get parent
-					parentDir = par; // set parent directory
-					//if( (parentDir.name == 'sdcard' && currentDir.name != 'sdcard') || parentDir.name != 'sdcard' ) 
-					//alert(parentDir.name +"  "+ currentDir.name) 
-				}, function(error){ // error get parent
-					console.log('Get parent error: '+error.code);
+			var explorer =new Explorer();
+			var callBack = function(dirs,files,file)
+			{
+			try{
+				if(dirs && files){
+				$scope.$apply(function(){
+					$scope.dirs =dirs;
+					$scope.files =files;
 				});
-				var directoryReader = directoryEntry.createReader();
-				directoryReader.readEntries(function(entries){
-					
-					var dirArr = new Array();
-					var fileArr = new Array();
-					for(var i=0; i<entries.length; ++i){ // sort entries
-						var entry = entries[i];
-						if( entry.isDirectory && entry.name[0] != '.' ) dirArr.push(entry);
-						else if( entry.isFile && entry.name[0] != '.' ) fileArr.push(entry);
-					}
-					//alert(dirArr.length +"||"+ fileArr.length);
-					$scope.$apply(function(){
-						$scope.dirs =dirArr;
-						$scope.files =fileArr;
-					});
-				}, function(error){
-					console.log('listDir readEntries error: '+error.code);
-				});
-				
-			}
-			/* read from file */
-			function readFile(fileEntry){
-				if( !fileEntry.isFile ) console.log('readFile incorrect type');
-				fileEntry.file(function(file){
-					/*var reader = new FileReader();
-					reader.onloadend = function(evt) {
-						console.log("Read as data URL");
-						console.log(evt.target.result); // show data from file into console
-					};
-					reader.readAsDataURL(file);*/
+				}
+				if(file)
+				{
 					$scope.$apply(function(){
 						//alert(file.name);
 					try{
 						$scope.loadFile(file);
 						$scope.explore =false;
+						$scope.showTools = true;
 						}
 						catch(e)
 						{
 							alert(e.message);
 						}
 					});
-				}, function(error){
-					console.log(evt.target.error.code);
-				});
-			}
-
-			/* open item */
-			function openItem(type){
-				if( type == 'd' ){
-					listDir(activeItem);
-				} else if(type == 'f'){
-					readFile(activeItem);
 				}
-			}
-
-			/* get active item  */
-			function getActiveItem(name, type){
-				if( type == 'd' && currentDir != null ){
-					currentDir.getDirectory(name, {create:false},
-						function(dir){ // success find directory
-							activeItem = dir;
-							activeItemType = type;
-						}, 
-						function(error){ // error find directory
-							console.log('Unable to find directory: '+error.code);
-						}
-					);
-				} else if(type == 'f' && currentDir != null){
-					currentDir.getFile(name, {create:false},
-						function(file){ // success find file
-							activeItem = file;
-							activeItemType = type;
-						},
-						function(error){ // error find file
-							console.log('Unable to find file: '+error.code);
-						}
-					);
 				}
-			}
-
-			/* get clipboard item for copy or move */
-			function getClipboardItem(action){
-				if( activeItem != null) {
-					clipboardItem = activeItem;
-					clipboardAction = action;
+				catch(e)
+				{
+				alert("Update erroe:"+e.message)
 				}
-			}
+			}.bind(this);
+			explorer.UpdateScope = callBack;
 			$ionicPlatform.ready(function() {
-				getFileSystem();
+			try{
+				explorer.getFileSystem();
+				}
+				catch(e)
+				{
+				alert(e.message);
+				}
 			});
-			$scope.OpenSelectedItem = function(name,type)
+			$rootScope.OpenSelectedItem = function(name,type)
 			{
-				//alert(name+"/"+type)
-				getActiveItem(name, type);
-				openItem(activeItemType);
+				//alert(name+"/"+type + "/"+ explorer.getActiveItem)
+				explorer.getActiveItem(name, type);
+			//	alert(name+"/"+type)
+				explorer.openItem(explorer.activeItemType);
 			}
 			$scope.back = function()
 			{
-				if( parentDir != null ) 
-				listDir(parentDir);
+				if( explorer.parentDir != null ) 
+				explorer.listDir(explorer.parentDir);
+			}
+			$scope.toolActivate = function(name,type)
+			{
+				//alert(name+"/"+type + "/"+ explorer.getActiveItem)
+				$scope.SelectedMouseTool=val;
 			}			
 			});
+			
 		</script>
         <script type="text/javascript" src="cordova.js"></script>
     
   <title>DICOM VIEWER HTML5</title>
     </head>
-    <body ng-app="dvh" ng-controller="ctrllll" >
-		<ion-header-bar align-title="center" class="bar-dark" >
+    <body ng-app="dvh" ng-controller="ctrl" style="overflow:none">
+		<div class="bar bar-dark">
 			<div class="buttons">
-				<button class="button" ng-click="explore =!explore">explore</button>
+				<button class="button" ng-click="explore =!explore;showTools = false;urll=false ">explore</button>
+				<button class="button" ng-click="showTools = true; explore =false ;urll=false">Tools</button>
 			</div>
 			<h1 class="title">DVH</h1>
 			<div class="buttons">
-				<button class="button" id="urlbtn" >Open</button>
-			</div>
-		</ion-header-bar>
-		<input ng-hide ="true" type="text" class="button" id="file" value="http://x.babymri.org/?53320924&.dcm" /> 
-		<ion-content overflow-scroll="true" scroll="false" ng-hide="explore" >
-			<div class="row has-header " style="background-color:black">
-			  <div class="col "><img src="icons/cir.png" ng-click="SelectedMouseTool='circle';"/></div>
-			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line'"/></div>
-			  <div class="col "><img src="icons/rect.png" ng-click="SelectedMouseTool='rectangular'"/></div>
-			  <div class="col "><img src="icons/ele.png" ng-click="SelectedMouseTool='ellipse'"/></div>
-			  <div class="col "><img src="icons/wl.png" ng-click="SelectedMouseTool='WindowLevel'"/></div>
-			  <div class="col "><img src="icons/plane.png" ng-click="SelectedButtonTool='plain'"/></div>
-			  <div class="col "><img src="icons/Ivt.png" ng-click="SelectedButtonTool='invplain'"/></div>
-			</div>
-			<div class="row " style="background-color:black">
-			  <div class="col "><img src="icons/hot.png" ng-click="SelectedButtonTool='hot'"/></div>
-			  <div class="col "><img src="icons/rbow.png" ng-click="SelectedButtonTool='rainbow'"/></div>
-			  <div class="col "><img src="icons/snr.png" ng-click="SelectedButtonTool='sharpen'"/></div>
-			  <div class="col "><img src="icons/ed.png" ng-click="SelectedButtonTool='sobel'"/></div>
-			  <div class="col "><img src="icons/rset.png" ng-click="SelectedButtonTool='reset image'"/></div>
-			  <div class="col "><img src="icons/clrann.png" ng-click="SelectedButtonTool='clearAnnotation'"/></div>
-			  <div class="col "><img src="icons/clr.png" ng-click="SelectedButtonTool='clear'"/></div>
+				<button class="button" ng-click="showTools = false; explore = false;urll=!urll;" >Open</button>
 			</div>
 			
-			<div  class = "row" style="padding-top: 15px;">
+		</div>
+
+		<div ng-show ="showTools" class="row has-header " style="background-color:black;margin-top:43px">
+			  <div class="col "><img src="icons/cir.png" ng-click="SelectedMouseTool='circle';"/></div>
+			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line';"/></div>
+			  <div class="col "><img src="icons/rect.png" ng-click="SelectedMouseTool='rectangular';"/></div>
+			  <div class="col "><img src="icons/ele.png" ng-click="SelectedMouseTool='ellipse';"/></div>
+			  <div class="col "><img src="icons/wl.png" ng-click="SelectedMouseTool='WindowLevel';"/></div>
+			  <div class="col "><img src="icons/plane.png" ng-click="SelectedButtonTool='plain';"/></div>
+			  <div class="col "><img src="icons/Ivt.png" ng-click="SelectedButtonTool='invplain';"/></div>
+		</div>
+		<div ng-show ="showTools" class="row " style="background-color:black">
+			  <div class="col "><img src="icons/hot.png" ng-click="SelectedButtonTool='hot';"/></div>
+			  <div class="col "><img src="icons/rbow.png" ng-click="SelectedButtonTool='rainbow';"/></div>
+			  <div class="col "><img src="icons/snr.png" ng-click="SelectedButtonTool='sharpen';"/></div>
+			  <div class="col "><img src="icons/ed.png" ng-click="SelectedButtonTool='sobel';"/></div>
+			  <div class="col "><img src="icons/rset.png" ng-click="SelectedButtonTool='reset image';"/></div>
+			  <div class="col ">
+				<img src="icons/clrann.png" ng-click="SelectedButtonTool='clearAnnotation';"/>
+			  </div>
+			  <div class="col "><img src="icons/clr.png" ng-click="SelectedButtonTool='clear'"/></div>
+		</div>
+		<div ng-show="urll "class="row " style="background-color:black;margin-top:43px;">
+			  <div class="col col-90 buttons">
+			  <input type="text"  id="file" style="padding:3px;overflow:hidden" value="http://x.babymri.org/?53320924&.dcm" />
+			  </div>
+			  <div class="col col-10 buttons"><button class="button button-royal" style="line-height:32px;min-height:0px;" id="urlbtn" >Open</button></div>
+		</div>
+			
+			
+			<div ng-hide="explore" class = "row " style="margin-top:7%;overflow:auto;height:65%;position:absolute">{{showTools}}
+						
 				<div style="margin-left: auto;margin-right: auto;display: table;height: 100%;">
 					<div style="display: table-cell;vertical-align: middle;">
 						<dicomviewer class ="dicom" fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn" style=""></dicomviewer>
 					</div> 
 				</div>
 			</div>
-		</ion-content>
+					
 		
-		<ion-content overflow-scroll="true"  scrollbar-y="true" ng-show="explore" >
-		<div class="button button-dark" ng-click="back()" style="margin:5px;"> back </div>
-			<div class = "list" style="padding-top: 15px;">
+
+		
+			<div  ng-show="explore"class="button button-dark" ng-click="back();" style="margin:5px;margin-top:48px"> back </div>
+			<div  ng-show="explore" class = "list" style="padding-top: 15px;">
 				<div class="item item-divider">
 				 Folders:
 				 </div>
-				<div class="item" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')" style="width:80%">{{o.name}}</div>
+				<div class="button" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')" style="width:80%">{{o.name}}</div>
 				<div class="item item-divider">
 				 Files
 				</div>
-				<div class="item" ng-repeat="o in files" ng-click="OpenSelectedItem(o.name,'f')" style="width:80%">{{o.name}}</div>
+				<div class="button" ng-repeat="i in files" ng-click="OpenSelectedItem(i.name,'f')" style="width:80%">{{i.name}}</div>
 			</div>
-		</ion-content>
+		<!-- <div  class = "row " style="margin-top:43px;overflow:auto;height:100%;width:100%;position:absolute" ></div> -->
+
+
     </body>
 </html>
