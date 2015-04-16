@@ -1,7 +1,7 @@
 ﻿var ngDicomViewer = angular.module('ngdicomviewer', []);
 var dwv = dwv || {};
 dwv.dicom = dwv.dicom || {};
-ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope) {
+ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope,$window) {
     return {
         restrict: "E",
         link: function (scope, element, attrs) {
@@ -27,7 +27,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 			scope.RemoteFile = false;
 			//scope.FileObjs =[];
             scope.Tag = [];
-
+			scope.ZoomCss = 1;
             scope.Rmin = 0;
             scope.Rmax = 100;
             var view = null;
@@ -62,6 +62,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                         filehandler.ResetCurrentImage(index);
                         imagehandler = filehandler.GetCurrentImageHandler();
                         imagehandler.annotationHistory.length = 0;
+						scope.ZoomCss = parseFloat(.65*screen.width)/wd;
                     }
                     if (newval == "threshold") {
                         isThresholdOn = true;
@@ -106,44 +107,22 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 }
             });
 
-            //            var buttonTool = function () {
-            //                if (!imagehandler.GetCanvasImage())//imageData
-            //                    return false;
-            //                if (attrs["tool"] == "plain" || attrs["tool"] == "invplain" || attrs["tool"] == "rainbow" || attrs["tool"] == "hot" || attrs["tool"] == "test") {
-            //                    imagehandler.SetToolParam(attrs["tool"]);
-            //                    imagehandler.GetWindowLevelTool().ChangeColorMap();
-            //                }
-            //                if (attrs["tool"] == "sharpen") {
-            //                    imagehandler.GetFilterTool().Sharpen(); //SetViewer(view,angularCanvas[0],angularCanvas[0].getContext("2d"));
-            //                }
-            //                if (attrs["tool"] == "sobel") {
-            //                    imagehandler.GetFilterTool().Sobel();
-            //                }
-            //                if (attrs["tool"] == "reset image") {
-            //                 //   imagehandler.ResetAll();
-            //                 var index = filehandler.GetCurrentIndex();
-            //                 filehandler.ResetCurrentImage(index);
-            //                 imagehandler = filehandler.GetCurrentImageHandler();
-            //                 imagehandler.annotationHistory.length = 0;
-            //                }
-            //                if (attrs["tool"] == "threshold") {
-            ////                    imagehandler.thresholdRange.min = parseInt($rootScope.Tmin);
-            ////                    imagehandler.thresholdRange.max = parseInt($rootScope.Tmax);
-            //                    imagehandler.GetFilterTool().Threshold();
-            //                }
-            //            };
+            
 
             var mouseDown = function (event) {
                 if (!imagehandler)
                     return false;
                 if (!imagehandler.GetCanvasImage())//imageData
                     return false;
+					var evt ={};
+					evt.offsetX =parseInt( event.offsetX / scope.ZoomCss);
+					evt.offsetY =parseInt( event.offsetY / scope.ZoomCss);
                 if (scope.SelectedMouseTool != "WindowLevel") {
                     imagehandler.SetToolParam(scope.SelectedMouseTool, scope.SelectedColor);
-                    imagehandler.GetAnnotationTool().Start(event);
+                    imagehandler.GetAnnotationTool().Start(evt);
                 }
                 else {
-                    imagehandler.GetWindowLevelTool().Start(event);
+                    imagehandler.GetWindowLevelTool().Start(evt);
                 }
 
             }
@@ -153,11 +132,14 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     return false;
                 if (!imagehandler.GetCanvasImage())//imageData
                     return false;
+					var evt ={};
+					evt.offsetX =parseInt( event.offsetX / scope.ZoomCss);
+					evt.offsetY =parseInt( event.offsetY / scope.ZoomCss);
                 if (scope.SelectedMouseTool != "WindowLevel") {
-                    imagehandler.GetAnnotationTool().Track(event);
+                    imagehandler.GetAnnotationTool().Track(evt);
                 }
                 else {
-                    imagehandler.GetWindowLevelTool().Track(event);
+                    imagehandler.GetWindowLevelTool().Track(evt);
                 }
             }
 
@@ -166,11 +148,14 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     return false;
                 if (!imagehandler.GetCanvasImage())//imageData
                     return false;
+					var evt ={};
+					evt.offsetX =parseInt( event.offsetX / scope.ZoomCss);
+					evt.offsetY =parseInt( event.offsetY / scope.ZoomCss);
                 if (scope.SelectedMouseTool != "WindowLevel") {
-                    imagehandler.GetAnnotationTool().Stop(event);
+                    imagehandler.GetAnnotationTool().Stop(evt);
                 }
                 else {
-                    imagehandler.GetWindowLevelTool().Stop(event);
+                    imagehandler.GetWindowLevelTool().Stop(evt);
                     scope.$apply(function () {
                         scope.WWidth = imagehandler.GetViewer().getWindowLut().getWidth();
                         scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
@@ -183,11 +168,6 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
             element.bind('mousemove', mouseMove);
             element.bind('mouseup', mouseUp);
             element.bind('mouseleave', mouseUp);
-
-            //            var applybtn = angular.element(document.getElementById(attrs["applybtnid"]));
-            //            if (applybtn) {
-            //                applybtn.bind("click", buttonTool);
-            //            }
 
             var mouseWheel = function (event) {
                 //ToDo: Zoom in and zoom out logic pending
@@ -220,6 +200,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 
             ///Dicom File Handling----------------<
             var fileUtilityElement = angular.element(document.getElementById(attrs["fileutilityid"]));
+			var wd = 1;
             var fileChangeUpdate = function () {
                 scope.$apply(function () {
                     scope.Tag = imagehandler.GetFilteredTags();
@@ -230,9 +211,19 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
                     scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
                     scope.Tval = imagehandler.thresholdRange;
+					wd=parseFloat(angularCanvas[0].width);
+					scope.ZoomCss = parseFloat(.65*screen.width)/wd;
 
                 });
             };
+			var win = angular.element($window);
+			win.bind("resize",function(e){
+             scope.$apply(function () {
+			   		scope.ZoomCss = parseFloat(.65*screen.width)/wd;
+					alert("zc:"+scope.ZoomCss+"sw:"+screen.width)
+                });
+
+            })
             var onFileListChanged = function (event) {
                 var filesArray = event.target.files;
                 clear();
