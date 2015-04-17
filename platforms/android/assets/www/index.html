@@ -13,6 +13,7 @@
 		pading:0px;
 		overflow:hide;
 		position: fixed;
+		background-color:#444;
 		}
 		.fxd{
 		position: fixed;
@@ -98,6 +99,7 @@
   <title>DICOM VIEWER HTML5</title>
     </head>
     <body ng-app="dvh" ng-controller="ctrl" >
+	
 		<div class="bar bar-dark fxd">
 			<div class="buttons">
 				<button class="button" ng-click="explore = true; showTools = false;urll=false ">explore</button>
@@ -157,15 +159,15 @@
 
 		
 			<div  ng-show="explore" class="button button-dark" ng-click="back();" style="margin:5px;margin-top:48px"> back </div>
-			<div  ng-show="explore" class = "list" style="padding-top: 15px; overflow-y:auto;height:70%;display:block;position:absolute">
+			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:100%;overflow-y:auto;height:70%;display:block;position:absolute">
 				<div class="item item-divider">
 				 Folders:
 				 </div>
-				<div class="button" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')" style="width:80%">{{o.name}}</div>
+				<div class="button" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')" style="width:49%;float:left">{{o.name}}</div>
 				<div class="item item-divider">
 				 Files
 				</div>
-				<div class="button" ng-repeat="i in files" ng-click="OpenSelectedItem(i.name,'f')" style="width:80%">{{i.name}}</div>
+				<div class="button" ng-repeat="i in files" ng-click="OpenSelectedItem(i.name,'f')" style="width:49%;float:left">{{i.name}}</div>
 			</div>
 			
 			
