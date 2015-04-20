@@ -62,7 +62,13 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                         filehandler.ResetCurrentImage(index);
                         imagehandler = filehandler.GetCurrentImageHandler();
                         imagehandler.annotationHistory.length = 0;
+						/*if(wd >= hi && screen.width <= screen.height){
+						alert("wd")
 						scope.ZoomCss = parseFloat(.65*screen.width)/wd;
+						}else{
+						alert(hi)
+						scope.ZoomCss = parseFloat(.45*screen.height)/hi;
+						}*/
                     }
                     if (newval == "threshold") {
                         isThresholdOn = true;
@@ -201,6 +207,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
             ///Dicom File Handling----------------<
             var fileUtilityElement = angular.element(document.getElementById(attrs["fileutilityid"]));
 			var wd = 1;
+			var hi = 1;
             var fileChangeUpdate = function () {
                 scope.$apply(function () {
                     scope.Tag = imagehandler.GetFilteredTags();
@@ -212,7 +219,16 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
                     scope.Tval = imagehandler.thresholdRange;
 					wd=parseFloat(angularCanvas[0].width);
-					scope.ZoomCss = parseFloat(.65*screen.width)/wd;
+					hi = parseFloat(angularCanvas[0].height);
+					//alert("filechange");
+					//scope.ZoomCss = parseFloat(.65*screen.width)/wd;
+					if(wd >= hi && screen.width <= screen.height){
+						//alert("wd")
+						scope.ZoomCss = parseFloat(.65*screen.width)/wd;
+					}else{
+						//alert(hi + "/" + screen.height)
+						scope.ZoomCss = parseFloat(screen.height-340)/hi;
+					}
 
                 });
             };
@@ -220,7 +236,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 			win.bind("resize",function(e){
              scope.$apply(function () {
 			   		scope.ZoomCss = parseFloat(.65*screen.width)/wd;
-					alert("zc:"+scope.ZoomCss+"sw:"+screen.width)
+					//alert("zc:"+scope.ZoomCss+"sw:"+screen.width)
                 });
 
             })

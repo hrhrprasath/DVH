@@ -7,16 +7,22 @@
 		<link rel="stylesheet" type="text/css" href="css/ionic.min.css" />
 		<style>
 		html,body{
-		width:100%;
-		height:100%;
-		margin:0px;
-		pading:0px;
-		overflow:hide;
-		position: fixed;
-		background-color:#444;
+			width:100%;
+			height:100%;
+			margin:0px;
+			pading:0px;
+			overflow:hide;
+			position: fixed;
+			background-color:#444;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
 		}
 		.fxd{
-		position: fixed;
+			position: fixed;
 		}
 		</style>
         <script type="text/javascript" src="js/ionic.bundle.min.js"></script>
@@ -30,7 +36,7 @@
 			
 			$scope.explore =false;
 			$scope.showTools = true;
-			$scope.urll=false;
+			$scope.urll=true;
 			$scope.dirs =[];
 			$scope.files =[];
 			var explorer =new Explorer();
@@ -48,9 +54,9 @@
 					$scope.$apply(function(){
 						//alert(file.name);
 					try{
-						$scope.loadFile(file);
-						$scope.explore =false;
-						$scope.showTools = true;
+							$scope.explore =false;
+							$scope.showTools = true;
+							$scope.loadFile(file);
 						}
 						catch(e)
 						{
@@ -68,6 +74,7 @@
 			$ionicPlatform.ready(function() {
 			try{
 				explorer.getFileSystem();
+				$scope.urll=false;
 				}
 				catch(e)
 				{
@@ -159,15 +166,15 @@
 
 		
 			<div  ng-show="explore" class="button button-dark" ng-click="back();" style="margin:5px;margin-top:48px"> back </div>
-			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:100%;overflow-y:auto;height:70%;display:block;position:absolute">
-				<div class="item item-divider">
+			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:100%;overflow-y:auto;height:78%;display:block;position:absolute">
+				<div class="item item-divider" style="background-color:black;color:white">
 				 Folders:
 				 </div>
-				<div class="button" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')" style="width:49%;float:left">{{o.name}}</div>
-				<div class="item item-divider">
+				<div class="button" ng-repeat="o in dirs" ng-click="OpenSelectedItem(o.name,'d')" style="width:100%;text-align:left;overflow:hidden">{{o.name}}</div>
+				<div class="item item-divider" style="background-color:black;color:white">
 				 Files
 				</div>
-				<div class="button" ng-repeat="i in files" ng-click="OpenSelectedItem(i.name,'f')" style="width:49%;float:left">{{i.name}}</div>
+				<div class="button" ng-repeat="i in files" ng-click="OpenSelectedItem(i.name,'f')" style="width:100%;text-align:left;overflow:hidden">{{i.name}}</div>
 			</div>
 			
 			
