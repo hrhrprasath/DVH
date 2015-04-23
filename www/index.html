@@ -103,14 +103,15 @@
 			
 		<!-- <div  class = "row " style="margin-top:43px;overflow:auto;height:100%;width:100%;position:absolute" ></div> -->
 
-    <script type="text/javascript" src="js/ionic.bundle.min.js"></script>
+        <!-- <script type="text/javascript" src="js/ionic.bundle.min.js"></script> -->
+        <script type="text/javascript" src="js/angular.min.js"></script>
         <script type="text/javascript" src="js/NgDicomViewer.js"></script>
         <script type="text/javascript" src="js/Explorer.js"></script>
         <script type="text/javascript" src="js/openjpeg.js"></script>
-        <script type="text/javascript" src="js/ng-cordova.min.js"></script>
+        <!-- <script type="text/javascript" src="js/ng-cordova.min.js"></script> -->
         <script type="text/javascript">
-		angular.module('dvh', ['ionic','ngdicomviewer','ngCordova'])
-		 .controller('ctrl', function($scope, $cordovaFile,$ionicPlatform,$ionicSideMenuDelegate,$rootScope,$timeout) {
+		angular.module('dvh', ['ngdicomviewer'/*,'ngCordova'*/])
+		 .controller('ctrl', function($scope, /*$cordovaFile,*/$rootScope,$timeout) {
 			
 			$scope.explore =false;
 			$scope.showTools = true;
@@ -154,7 +155,7 @@
 				}
 			}.bind(this);
 			explorer.UpdateScope = callBack;
-			$ionicPlatform.ready(function() {
+			document.addEventListener("deviceready",function() {
 			try{
 				explorer.getFileSystem();
 				}
@@ -162,7 +163,16 @@
 				{
 				alert(e.message);
 				}
-			});
+			}, false);
+			/*$ionicPlatform.ready(function() {
+			try{
+				explorer.getFileSystem();
+				}
+				catch(e)
+				{
+				alert(e.message);
+				}
+			});*/
 			$rootScope.OpenSelectedItem = function(name,type)
 			{
 				//alert(name+"/"+type + "/"+ explorer.getActiveItem)

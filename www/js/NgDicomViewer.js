@@ -6,11 +6,11 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
         restrict: "E",
         link: function (scope, element, attrs) {
             var angularCanvas = angular.element('<canvas style="top:0%;left:0%; position: relative;margin:0px;padding: 0px;background-color: black;"></canvas> ');
-            angularCanvas[0].width = attrs["canvaswidth"] || 1;
-            angularCanvas[0].height = attrs["canvasheight"] || 1;
+            angularCanvas[0].width = attrs["canvaswidth"] || 310;
+            angularCanvas[0].height = attrs["canvasheight"] || 512;
 			angularCanvas[0].style.Top = '160px';
-            element[0].style.width = (attrs["canvaswidth"] || 1) + 'px';
-            element[0].style.height = (attrs["canvasheight"] || 1) + 'px';
+            element[0].style.width = (attrs["canvaswidth"] || 310) + 'px';
+            element[0].style.height = (attrs["canvasheight"] || 512) + 'px';
 
             $compile(angularCanvas)(scope);
             element.append(angularCanvas);

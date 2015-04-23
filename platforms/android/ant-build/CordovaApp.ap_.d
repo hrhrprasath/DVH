@@ -62,11 +62,8 @@ C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\test.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\thold.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\wl.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\img\logo.png \
+C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\angular.min.js \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\Explorer.js \
-C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\ionic.bundle.js \
-C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\ionic.bundle.min.js \
-C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\ng-cordova.min.js \
-C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\NgDicomViewer-mini.js \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\NgDicomViewer.js \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js\openjpeg.js \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\plugins\org.apache.cordova.file \
