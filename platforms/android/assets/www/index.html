@@ -110,15 +110,13 @@
         <script type="text/javascript" src="js/ng-cordova.min.js"></script>
         <script type="text/javascript">
 		angular.module('dvh', ['ionic','ngdicomviewer','ngCordova'])
-		 .controller('ctrl', function($scope, $cordovaFile,$ionicPlatform,$ionicSideMenuDelegate,$rootScope) {
+		 .controller('ctrl', function($scope, $cordovaFile,$ionicPlatform,$ionicSideMenuDelegate,$rootScope,$timeout) {
 			
 			$scope.explore =false;
 			$scope.showTools = true;
 			$scope.urll=true;
 			$scope.$watch('loadFile',function(){
-			$scope.$apply(function(){
-					$scope.urll=false;
-				});
+				$scope.urll=false;
 			});
 			$scope.urll=false;
 			$scope.dirs =[];
@@ -136,17 +134,18 @@
 				if(file)
 				{
 					$scope.$apply(function(){
-						//alert(file.name);
+						$scope.explore =false;
+						$scope.showTools = true;
+					});
+					$timeout(function(){$scope.$apply(function(){
 					try{
-							$scope.explore =false;
-							$scope.showTools = true;
 							$scope.loadFile(file);
 						}
 						catch(e)
 						{
 							alert(e.message);
 						}
-					});
+					})},150);
 				}
 				}
 				catch(e)
@@ -169,7 +168,7 @@
 				//alert(name+"/"+type + "/"+ explorer.getActiveItem)
 				explorer.getActiveItem(name, type);
 			//	alert(name+"/"+type)
-				explorer.openItem(explorer.activeItemType);
+				//explorer.openItem(explorer.activeItemType);//Remember async.calling 
 			}
 			$scope.back = function()
 			{
