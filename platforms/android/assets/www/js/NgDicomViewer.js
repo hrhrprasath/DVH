@@ -8,7 +8,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
             var angularCanvas = angular.element('<canvas style="top:0%;left:0%; position: relative;margin:0px;padding: 0px;background-color: black;"></canvas> ');
             angularCanvas[0].width = attrs["canvaswidth"] || 1;
             angularCanvas[0].height = attrs["canvasheight"] || 1;
-
+			angularCanvas[0].style.Top = '160px';
             element[0].style.width = (attrs["canvaswidth"] || 1) + 'px';
             element[0].style.height = (attrs["canvasheight"] || 1) + 'px';
 
@@ -120,9 +120,11 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     return false;
                 if (!imagehandler.GetCanvasImage())//imageData
                     return false;
-					var evt ={};
-					evt.offsetX =parseInt( event.offsetX / scope.ZoomCss);
-					evt.offsetY =parseInt( event.offsetY / scope.ZoomCss);
+					var evt ={};//event.changedTouches[0].clientX;
+					var ex =event.offsetX ||event.touches[0].pageX - event.touches[0].target.offsetLeft;
+					var ey = event.offsetY|| event.touches[0].pageY - 150;
+					evt.offsetX =parseInt( ex/ scope.ZoomCss);
+					evt.offsetY =parseInt( ey/ scope.ZoomCss);
                 if (scope.SelectedMouseTool != "WindowLevel") {
                     imagehandler.SetToolParam(scope.SelectedMouseTool, scope.SelectedColor);
                     imagehandler.GetAnnotationTool().Start(evt);
@@ -139,8 +141,10 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 if (!imagehandler.GetCanvasImage())//imageData
                     return false;
 					var evt ={};
-					evt.offsetX =parseInt( event.offsetX / scope.ZoomCss);
-					evt.offsetY =parseInt( event.offsetY / scope.ZoomCss);
+					var ex =event.offsetX ||event.touches[0].pageX - event.touches[0].target.offsetLeft;
+					var ey = event.offsetY|| event.touches[0].pageY -150;
+					evt.offsetX =parseInt( ex/ scope.ZoomCss);
+					evt.offsetY =parseInt( ey/ scope.ZoomCss);
                 if (scope.SelectedMouseTool != "WindowLevel") {
                     imagehandler.GetAnnotationTool().Track(evt);
                 }
@@ -155,8 +159,12 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 if (!imagehandler.GetCanvasImage())//imageData
                     return false;
 					var evt ={};
-					evt.offsetX =parseInt( event.offsetX / scope.ZoomCss);
-					evt.offsetY =parseInt( event.offsetY / scope.ZoomCss);
+					
+					var ex =event.offsetX ||event.changedTouches[0].pageX - angularCanvas[0].offsetLeft;
+					var ey = event.offsetY|| event.changedTouches[0].pageY - 150;
+					//alert(ex+"|"+ey +"|"+scope.ZoomCss);
+					evt.offsetX =parseInt( ex/ scope.ZoomCss);
+					evt.offsetY =parseInt( ey/ scope.ZoomCss);
                 if (scope.SelectedMouseTool != "WindowLevel") {
                     imagehandler.GetAnnotationTool().Stop(evt);
                 }
@@ -170,11 +178,15 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 event.stopPropagation();
             }
 
-            element.bind('mousedown', mouseDown);
-            element.bind('mousemove', mouseMove);
-            element.bind('mouseup', mouseUp);
-            element.bind('mouseleave', mouseUp);
-
+          //  element.bind('mousedown', mouseDown);
+          //  element.bind('mousemove', mouseMove);
+          //  element.bind('mouseup', mouseUp);
+           // element.bind('mouseleave', mouseUp);
+			
+			element.bind('touchstart', mouseDown);
+            element.bind('touchmove', mouseMove);
+            element.bind('touchend', mouseUp);
+			
             var mouseWheel = function (event) {
                 //ToDo: Zoom in and zoom out logic pending
                 //imagehandler.GetTransformationTool().Start(e,imageData);

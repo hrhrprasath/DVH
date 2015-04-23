@@ -33,7 +33,7 @@
 		<div class="bar bar-dark fxd">
 			<div class="buttons">
 				<button class="button" ng-click="explore = true; showTools = false;urll=false ">explore</button>
-				<button class="button" ng-click="showTools = true; explore =false ;urll=false">Tools</button>
+				<button class="button" ng-click="showTools = true; explore =false;urll=false">Tools</button>
 			</div>
 			<h1 class="title" >DVH</h1>
 			<div class="buttons">
@@ -62,19 +62,22 @@
 			  </div>
 			  <div class="col "><img src="icons/clr.png" ng-click="SelectedButtonTool='clear'"/></div>
 		</div>
-		<div ng-show="urll "class="row " style="background-color:black;margin-top:43px;">
-			  <div class="col col-90 buttons">
+		<div ng-show="urll" class="row " style="background-color:black;margin-top:43px;">
+			  <div class="col col-80 buttons">
 			  <input type="text"  id="file" style="padding:3px;overflow:hidden" value="http://x.babymri.org/?53320924&.dcm" />
 			  
 			  </div>
-			  <div class="col col-10 buttons"><button class="button button-royal" style="line-height:32px;min-height:0px;" id="urlbtn" >Open</button></div>
+			  <div class="col col-20 buttons"><button class="button button-royal" style="line-height:32px;min-height:0px;" id="urlbtn" >Open</button></div>
 		</div>
 			<!-- <div ng-show ="showTools" class="row " style="background-color:black;color:white; vertical-align:middle">
 			<button  style="color:white;margin:0px;border:0px;background-color:black;cursor:default" >ZOOM [.1-4]: </button>
 			<input type="text"  id="file" style="width:25px" ng-model="ZoomCss" />
 			
 			</div> -->
-			<div ng-hide="explore" id="dicomContainer" class = "row " style="overflow:none;height:65%;position:absolute;padding-top:10px;-webkit-transform-origin: 0 0;" ng-style="{zoom :ZoomCss }">
+			<div style="top:150px;left:5px;position:absolute" >
+			<dicomviewer  ng-style="{zoom :ZoomCss }" fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn"   ></dicomviewer>
+			</div>
+			<!--<div ng-hide="explore" id="dicomContainer" class = "row " style="overflow:none;height:65%;position:absolute;padding-top:10px;-webkit-transform-origin: 0 0;" ng-style="{zoom :ZoomCss }">
 						
 				<div style="margin-left: auto;margin-right: auto;display: table;height: 100%;">
 				<div style="margin-left: auto;margin-right: auto;display: table;height: 100%;">
@@ -83,7 +86,7 @@
 					</div> 
 				</div>
 			</div>
-			</div>
+			</div>-->
 					
 			<div  ng-show="explore" class="button button-dark" ng-click="back();" style="margin:5px;margin-top:48px"> back </div>
 			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:100%;overflow-y:auto;height:78%;display:block;position:absolute">
@@ -112,6 +115,12 @@
 			$scope.explore =false;
 			$scope.showTools = true;
 			$scope.urll=true;
+			$scope.$watch('loadFile',function(){
+			$scope.$apply(function(){
+					$scope.urll=false;
+				});
+			});
+			$scope.urll=false;
 			$scope.dirs =[];
 			$scope.files =[];
 			var explorer =new Explorer();
@@ -149,7 +158,6 @@
 			$ionicPlatform.ready(function() {
 			try{
 				explorer.getFileSystem();
-				$scope.urll=false;
 				}
 				catch(e)
 				{
