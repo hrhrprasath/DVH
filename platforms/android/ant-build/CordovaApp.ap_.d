@@ -48,7 +48,6 @@ C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\clr.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\clrann.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\ed.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\ele.png \
-C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\forkme.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\hot.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\Ivt.png \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons\line.png \
