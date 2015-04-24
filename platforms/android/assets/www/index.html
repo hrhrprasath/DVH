@@ -82,12 +82,12 @@
 				</div>
 				<div class="button" ng-repeat="i in files" ng-click="OpenSelectedItem(i.name,'f')" style="width:100%;text-align:left;overflow:hidden">{{i.name}}</div>
 			</div>
-        <script type="text/javascript" src="js/angular.min.js"></script>
+        <script type="text/javascript" src="js/ionic.bundle.min.js"></script>
         <script type="text/javascript" src="js/NgDicomViewer.js"></script>
         <script type="text/javascript" src="js/Explorer.js"></script>
         <script type="text/javascript" src="js/openjpeg.js"></script>
         <script type="text/javascript">
-		angular.module('dvh', ['ngdicomviewer'/*,'ngCordova'*/])
+		angular.module('dvh', ['ngdicomviewer'/*,'iconic','ngCordova'*/])
 		 .controller('ctrl', function($scope, /*$cordovaFile,*/$rootScope,$timeout) {
 			$scope.explore =false;
 			$scope.showTools = true;
