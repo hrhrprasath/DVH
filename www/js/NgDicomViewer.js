@@ -50,6 +50,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     if (newval == "plain" || newval == "invplain" || newval == "rainbow" || newval == "hot" || newval == "test") {
                         imagehandler.SetToolParam(newval);
                         imagehandler.GetWindowLevelTool().ChangeColorMap();
+						//imagehandler.ApplyCurrentTransformation();
                     }
                     if (newval == "sharpen") {
                         imagehandler.GetFilterTool().Sharpen(); //SetViewer(view,angularCanvas[0],angularCanvas[0].getContext("2d"));
@@ -88,8 +89,11 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                             angularCanvas[0].width = angularCanvas[0].width;
                     }
                     if (newval == 'clearAnnotation') {
-                        if (imagehandler)
+                        if (imagehandler){
                             imagehandler.ClearAnnotation();
+							imagehandler.ApplyCurrentTransformation();
+							}
+							
                     }
                     if (newval != "threshold")
                         scope.SelectedButtonTool = "";
@@ -123,8 +127,8 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 					var evt ={};//event.changedTouches[0].clientX;
 					var ex =event.offsetX ||event.touches[0].pageX - event.touches[0].target.offsetLeft;
 					var ey = event.offsetY|| event.touches[0].pageY - 150;
-					evt.offsetX =parseInt( ex/ scope.ZoomCss);
-					evt.offsetY =parseInt( ey/ scope.ZoomCss);
+					evt.offsetX =parseInt( ex/ imagehandler.zoomX);
+					evt.offsetY =parseInt( ey/ imagehandler.zoomX);
                 if (scope.SelectedMouseTool != "WindowLevel") {
                     imagehandler.SetToolParam(scope.SelectedMouseTool, scope.SelectedColor);
                     imagehandler.GetAnnotationTool().Start(evt);
@@ -143,13 +147,14 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 					var evt ={};
 					var ex =event.offsetX ||event.touches[0].pageX - event.touches[0].target.offsetLeft;
 					var ey = event.offsetY|| event.touches[0].pageY -150;
-					evt.offsetX =parseInt( ex/ scope.ZoomCss);
-					evt.offsetY =parseInt( ey/ scope.ZoomCss);
+					evt.offsetX =parseInt( ex/ imagehandler.zoomX);
+					evt.offsetY =parseInt( ey/ imagehandler.zoomX);
                 if (scope.SelectedMouseTool != "WindowLevel") {
                     imagehandler.GetAnnotationTool().Track(evt);
                 }
                 else {
                     imagehandler.GetWindowLevelTool().Track(evt);
+					//imagehandler.ApplyCurrentTransformation();
                 }
             }
 
@@ -162,14 +167,15 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 					
 					var ex =event.offsetX ||event.changedTouches[0].pageX - angularCanvas[0].offsetLeft;
 					var ey = event.offsetY|| event.changedTouches[0].pageY - 150;
-					//alert(ex+"|"+ey +"|"+scope.ZoomCss);
-					evt.offsetX =parseInt( ex/ scope.ZoomCss);
-					evt.offsetY =parseInt( ey/ scope.ZoomCss);
+					//alert(ex+"|"+ey +"|"+scope.ZoomCss+"ct:"+event.changedTouches.length);
+					evt.offsetX =parseInt( ex/ imagehandler.zoomX);
+					evt.offsetY =parseInt( ey/ imagehandler.zoomX);
                 if (scope.SelectedMouseTool != "WindowLevel") {
                     imagehandler.GetAnnotationTool().Stop(evt);
-                }
+		        }
                 else {
                     imagehandler.GetWindowLevelTool().Stop(evt);
+					//imagehandler.ApplyCurrentTransformation();
                     scope.$apply(function () {
                         scope.WWidth = imagehandler.GetViewer().getWindowLut().getWidth();
                         scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
@@ -224,28 +230,29 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 scope.$apply(function () {
 				alert("New Image");
 				try{
-                    scope.Tag = imagehandler.GetFilteredTags();
-					if(imagehandler.tag.PatientName)
-					 scope.PatientName = imagehandler.tag.PatientName.value.toString();
-					else
-					 scope.PatientName ="";
-					if(imagehandler.tag.PatientId)
-                     scope.PatientId = imagehandler.tag.PatientID.value.toString();
-					else
-					 scope.PatientId = "";
-					scope.WWidth = imagehandler.GetViewer().getWindowLut().getWidth();
-					scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
-					scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
-					scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
-					scope.Tval = imagehandler.thresholdRange;
-					wd=parseFloat(angularCanvas[0].width);
-					hi = parseFloat(angularCanvas[0].height);
-					//alert("wd:"+wd+"sw:"+screen.width+"hi:"+hi+"sh:"+screen.height + "s_ok:"+(wd >= hi && screen.width <= screen.height));
-					if(wd >= hi && screen.width <= screen.height){
-						scope.ZoomCss = parseFloat(.65*screen.width)/wd;
-					 }else{
-						scope.ZoomCss = parseFloat(screen.height-340)/hi;
-					 }
+						scope.Tag = imagehandler.GetFilteredTags();
+						if(imagehandler.tag.PatientName)
+						 scope.PatientName = imagehandler.tag.PatientName.value.toString();
+						else
+						 scope.PatientName ="";
+						if(imagehandler.tag.PatientId)
+						 scope.PatientId = imagehandler.tag.PatientID.value.toString();
+						else
+						 scope.PatientId = "";
+						scope.WWidth = imagehandler.GetViewer().getWindowLut().getWidth();
+						scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
+						scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
+						scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
+						scope.Tval = imagehandler.thresholdRange;
+						wd=parseFloat(angularCanvas[0].width);
+						hi = parseFloat(angularCanvas[0].height);
+						imagehandler.zoomX = (document.body.clientWidth-10)/wd;
+						imagehandler.zoomY = (document.body.clientWidth-10)/wd; 
+						/*imagehandler.zoomX =1.5;
+						imagehandler.zoomY =1.5;*/
+						angularCanvas[0].width= imagehandler.zoomX*angularCanvas[0].width;
+						angularCanvas[0].height= imagehandler.zoomY*angularCanvas[0].height;
+						imagehandler.ApplyCurrentTransformation();
 					}
 					catch(e)
 					{
@@ -254,14 +261,14 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 
                 });
             };
-			var win = angular.element($window);
+			/*var win = angular.element($window);
 			win.bind("resize",function(e){
              scope.$apply(function () {
 			   		scope.ZoomCss = parseFloat(.65*screen.width)/wd;
 					//alert("zc:"+scope.ZoomCss+"sw:"+screen.width)
                 });
 
-            })
+            })*/
             var onFileListChanged = function (event) {
                 var filesArray = event.target.files;
                 clear();
@@ -732,8 +739,8 @@ var WindowLevelTool = (function () {
         if (handler) {
             this.imageHandler = handler;
             this.viewer = this.imageHandler.viewer;
-            this.context = this.imageHandler.context;
-            this.canvas = this.imageHandler.canvas;
+            this.context = this.imageHandler.cacheCanvas.getContext("2d");
+            this.canvas = this.imageHandler.cacheCanvas;
             this.maptoolName = this.imageHandler.currentTool;
         }
 
@@ -947,8 +954,8 @@ var FilterTool = (function () {
         if (handler) {
             this.imageHandler = handler;
             this.viewer = this.imageHandler.viewer;
-            this.context = this.imageHandler.context;
-            this.canvas = this.imageHandler.canvas;
+            this.context = this.imageHandler.cacheCanvas.getContext("2d");
+            this.canvas = this.imageHandler.cacheCanvas;
         }
     };
     /**
@@ -1292,7 +1299,7 @@ var ImageHandler = (function () {
     * @return none
     */
     ImageHandler.prototype.Update = function () {
-        //this.ApplyCurrentTransformation();
+        this.ApplyCurrentTransformation();
         this.GetAnnotationTool().DrawHistory();
 
     };
@@ -1304,6 +1311,7 @@ var ImageHandler = (function () {
     ImageHandler.prototype.ResetAndUpdate = function () {
         //this.ApplyCurrentTransformation();
         this.ResetImage();
+		this.ApplyCurrentTransformation();
         this.GetAnnotationTool().DrawHistory();
 
     };
