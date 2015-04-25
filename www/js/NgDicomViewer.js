@@ -222,24 +222,34 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 			var hi = 1;
             var fileChangeUpdate = function () {
                 scope.$apply(function () {
+				alert("New Image");
+				try{
                     scope.Tag = imagehandler.GetFilteredTags();
-                    scope.PatientName = imagehandler.tag.PatientName.value.toString();
-                    scope.PatientId = imagehandler.tag.PatientID.value.toString();
-                    scope.WWidth = imagehandler.GetViewer().getWindowLut().getWidth();
-                    scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
-                    scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
-                    scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
-                    scope.Tval = imagehandler.thresholdRange;
+					if(imagehandler.tag.PatientName)
+					 scope.PatientName = imagehandler.tag.PatientName.value.toString();
+					else
+					 scope.PatientName ="";
+					if(imagehandler.tag.PatientId)
+                     scope.PatientId = imagehandler.tag.PatientID.value.toString();
+					else
+					 scope.PatientId = "";
+					scope.WWidth = imagehandler.GetViewer().getWindowLut().getWidth();
+					scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
+					scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
+					scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
+					scope.Tval = imagehandler.thresholdRange;
 					wd=parseFloat(angularCanvas[0].width);
 					hi = parseFloat(angularCanvas[0].height);
-					//alert("filechange");
-					//scope.ZoomCss = parseFloat(.65*screen.width)/wd;
+					//alert("wd:"+wd+"sw:"+screen.width+"hi:"+hi+"sh:"+screen.height + "s_ok:"+(wd >= hi && screen.width <= screen.height));
 					if(wd >= hi && screen.width <= screen.height){
-						//alert("wd")
 						scope.ZoomCss = parseFloat(.65*screen.width)/wd;
-					}else{
-						//alert(hi + "/" + screen.height)
+					 }else{
 						scope.ZoomCss = parseFloat(screen.height-340)/hi;
+					 }
+					}
+					catch(e)
+					{
+						alert("FC UPdate ex: "+e.message);
 					}
 
                 });
