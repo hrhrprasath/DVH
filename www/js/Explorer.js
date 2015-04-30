@@ -16,26 +16,26 @@ var Explorer = (function () {
 				this.listDir(this.root);
 			}.bind(this);
 		var error = function(evt){ // error get file system
-				alert("File System Error: "+evt.target.error.code);
+				console.log("File System Error: "+evt.target.error.code);
 			};
 		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,sucess,error);
 		}
 		catch(e)
 		{
-		 alert("listDir :  "+e.message)
+		 console.log("listDir :  "+e.message)
 		}	
 	};
 	Explorer.prototype.listDir = function (directoryEntry){
 		try
 		{
 			if( !directoryEntry.isDirectory )
-			alert('listDir incorrect type');
+			console.log('listDir incorrect type');
 			this.currentDir = directoryEntry; // set current directory
 			
 			var sucess = function(par){ // success get parent
 				this.parentDir = par; // set parent directory
 				//if( (this.parentDir.name == 'sdcard' && this.currentDir.name != 'sdcard') || this.parentDir.name != 'sdcard' ) 
-				//alert(this.parentDir.name +"  "+ this.currentDir.name) 
+				//console.log(this.parentDir.name +"  "+ this.currentDir.name) 
 			}.bind(this);
 			var error = function(error){ // error get parent
 				console.log('Get parent error: '+error.code);
@@ -52,23 +52,23 @@ var Explorer = (function () {
 					if( entry.isDirectory && entry.name[0] != '.' ) dirArr.push(entry);
 					else if( entry.isFile && entry.name[0] != '.' ) fileArr.push(entry);
 				}
-	//			alert(dirArr.length +"||"+ fileArr.length);
+	//			console.log(dirArr.length +"||"+ fileArr.length);
 				this.UpdateScope(dirArr,fileArr);
 			}.bind(this);
 			var readError = function(error){
-				alert('listDir readEntries error: '+error.code);
+				console.log('listDir readEntries error: '+error.code);
 			};
 			directoryReader.readEntries(readSucess,readError);
 		}
 		catch(e)
 		{
-		 alert("listDir :  "+e.message)
+		 console.log("listDir :  "+e.message)
 		}		
 	};
 	Explorer.prototype.readFile = function (fileEntry){
 	try{
 			if( !fileEntry.isFile )
-			alert('readFile incorrect type');
+			console.log('readFile incorrect type');
 			var sucess = function(file){
 				/*var reader = new FileReader();
 				reader.onloadend = function(evt) {
@@ -79,13 +79,13 @@ var Explorer = (function () {
 				this.UpdateScope(null,null,file);
 			}.bind(this);
 			var error = function(error){
-				alert("file read error:"+evt.target.error.code);
+				console.log("file read error:"+evt.target.error.code);
 			};
 			fileEntry.file(sucess,error);
 		}
 		catch(e)
 		{
-		 alert("readFile :  "+e.message)
+		 console.log("readFile :  "+e.message)
 		}
 	};
 	Explorer.prototype.openItem  = function (type){
@@ -98,23 +98,23 @@ var Explorer = (function () {
 			}
 		catch(e)
 		{
-		 alert("openItem :  "+e.message)
+		 console.log("openItem :  "+e.message)
 		}
 	};
 	Explorer.prototype.getActiveItem = function (name, type){
 	try{
-	//alert(this.activeItemType +"||"+type);
+	//console.log(this.activeItemType +"||"+type);
 			var sucess =function(dir){ // success find directory
-			//alert("cb dir");
+			//console.log("cb dir");
 						this.activeItem = dir;
 						this.activeItemType = type;
 						this.openItem('d');
 					}.bind(this);
 			var error = function(error){ // error find directory
-						alert('Unable to find directory: '+error.code);
+						console.log('Unable to find directory: '+error.code);
 					};
 			var fileSucess = function(file){ // success find file
-			//alert("cb file")
+			//console.log("cb file")
 						this.activeItem = file;
 						this.activeItemType = type;
 						this.openItem('f');
@@ -123,16 +123,16 @@ var Explorer = (function () {
 						console.log('Unable to find file: '+error.code);
 					};
 			if( type == 'd' && this.currentDir != null ){
-				//alert("dir:"+name);
+				//console.log("dir:"+name);
 				this.currentDir.getDirectory(name, {create:false, exclusive: false},sucess,error);
 			} else if(type == 'f' && this.currentDir != null){
-				//alert("File:"+name);
+				//console.log("File:"+name);
 				this.currentDir.getFile(name, {create:false, exclusive: false},fileSucess,fileError);
 			}
 		}
 		catch(e)
 		{
-			alert("getActiveItems :  "+e.message)
+			console.log("getActiveItems :  "+e.message)
 		}
 	};
 	Explorer.prototype.getClipboardItem = function (action){
@@ -144,7 +144,7 @@ var Explorer = (function () {
 		}
 		catch(e)
 		{
-			alert("getClipboardItem : "+e.message)
+			console.log("getClipboardItem : "+e.message)
 		}
 	}
 return Explorer;
