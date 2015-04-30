@@ -120,6 +120,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
             
 
             var mouseDown = function (event) {
+			try{
                 if (!imagehandler)
                     return false;
                 if (!imagehandler.GetCanvasImage())//imageData
@@ -136,10 +137,15 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 else {
                     imagehandler.GetWindowLevelTool().Start(evt);
                 }
-
+				}
+				catch(e)
+				{
+					console.log(e.message);
+				}
             }
 
             var mouseMove = function (event) {
+			try{
                 if (!imagehandler)
                     return false;
                 if (!imagehandler.GetCanvasImage())//imageData
@@ -156,9 +162,15 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     imagehandler.GetWindowLevelTool().Track(evt);
 					//imagehandler.ApplyCurrentTransformation();
                 }
+				}
+				catch(e)
+				{
+					console.log(e.message);
+				}
             }
 
             var mouseUp = function (event) {
+			try{
                 if (!imagehandler)
                     return false;
                 if (!imagehandler.GetCanvasImage())//imageData
@@ -182,6 +194,11 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     });
                 }
                 event.stopPropagation();
+				}
+				catch(e)
+				{
+					console.log(e.message);
+				}
             }
 
           //  element.bind('mousedown', mouseDown);
@@ -226,9 +243,10 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
             var fileUtilityElement = angular.element(document.getElementById(attrs["fileutilityid"]));
 			var wd = 1;
 			var hi = 1;
-            var fileChangeUpdate = function () {
+            var fileChangeUpdate = function (state) {
+			if(state != false){
                 scope.$apply(function () {
-				alert("New Image");
+				//alert("New Image");
 				try{
 						scope.Tag = imagehandler.GetFilteredTags();
 						if(imagehandler.tag.PatientName)
@@ -246,8 +264,12 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 						scope.Tval = imagehandler.thresholdRange;
 						wd=parseFloat(angularCanvas[0].width);
 						hi = parseFloat(angularCanvas[0].height);
-						imagehandler.zoomX = (document.body.clientWidth-10)/wd;
-						imagehandler.zoomY = (document.body.clientWidth-10)/wd; 
+						var zwd =(document.body.clientWidth-10)/wd;
+						var zwh =(document.body.clientHeight-170)/hi;
+						if(wd>=hi)
+							imagehandler.zoomX = imagehandler.zoomY = zwd;
+						else
+							imagehandler.zoomX = imagehandler.zoomY = zwh;
 						/*imagehandler.zoomX =1.5;
 						imagehandler.zoomY =1.5;*/
 						angularCanvas[0].width= imagehandler.zoomX*angularCanvas[0].width;
@@ -260,6 +282,52 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 					}
 
                 });
+				}
+				else{
+					if(imagehandler){
+					if(imagehandler.viewer){
+						imagehandler.viewer.getRescaleLut().initialise([]);
+						imagehandler.viewer.setRescaleLut(null);
+						imagehandler.viewer.setWindowLut(null);
+						imagehandler.viewer.getImage().setOriginalBuffer(null);
+						imagehandler.viewer.setImage(null);
+					}
+					imagehandler.viewer = null;
+					imagehandler.image = null;
+					imagehandler.tag = null;
+					imagehandler.canvasImage = null;
+					imagehandler.canvas = null;
+					imagehandler.context = null;
+					imagehandler.originalImage = null;
+					if(imagehandler.originalImageData)
+					   imagehandler.originalImageData.length = 0;
+					imagehandler.toolHandler = null;
+					imagehandler.history = [];
+					imagehandler.currentTool;
+					imagehandler.currentColour;
+					imagehandler.annotationHistory = [];
+					imagehandler.orgX = 0;
+					imagehandler.orgY = 0;
+					imagehandler.zoomX = 1;
+					imagehandler.zoomY = 1;
+					imagehandler.cacheCanvas = null;
+					imagehandler.thresholdRange={min:0,max:100}
+					imagehandler._annotationTool = null;
+					imagehandler._transformationTool = null;
+					imagehandler = null;
+					filehandler = FileHandler.GetInstence();
+					ToolHandler.GetInstence().imagehandler=null;
+					ToolHandler.GetInstence().Dispose();
+					if(typeof(Module)!="undefined")
+					{
+						Module = null;
+					}
+					filehandler.canvas = null;
+					filehandler.context = null;
+					filehandler.parentElement = null;
+				}
+				}
+				
             };
 			/*var win = angular.element($window);
 			win.bind("resize",function(e){
@@ -282,12 +350,62 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 
             fileUtilityElement.bind('change', onFileListChanged);
 			$rootScope.loadFile = function (f) {
-			 //alert("Change" )
-			 //alert("Change" + newval.name)
+				angularCanvas[0].width = 1;
+				angularCanvas[0].height = 1;
+				if(imagehandler){
+					if(imagehandler.viewer){
+						imagehandler.viewer.getRescaleLut().initialise([]);
+						imagehandler.viewer.setRescaleLut(null);
+						imagehandler.viewer.setWindowLut(null);
+						imagehandler.viewer.getImage().setOriginalBuffer(null);
+						imagehandler.viewer.setImage(null);
+					}
+					imagehandler.viewer = null;
+					imagehandler.image = null;
+					imagehandler.tag = null;
+					imagehandler.canvasImage = null;
+					imagehandler.canvas = null;
+					imagehandler.context = null;
+					imagehandler.originalImage = null;
+					if(imagehandler.originalImageData)
+					   imagehandler.originalImageData.length = 0;
+					imagehandler.toolHandler = null;
+					imagehandler.history = [];
+					imagehandler.currentTool;
+					imagehandler.currentColour;
+					imagehandler.annotationHistory = [];
+					imagehandler.orgX = 0;
+					imagehandler.orgY = 0;
+					imagehandler.zoomX = 1;
+					imagehandler.zoomY = 1;
+					imagehandler.cacheCanvas = null;
+					imagehandler.thresholdRange={min:0,max:100}
+					imagehandler._annotationTool = null;
+					imagehandler._transformationTool = null;
+					imagehandler = null;
+					filehandler = FileHandler.GetInstence();
+					filehandler.fileList[0].FileObj=null;
+					filehandler.fileList[0].ImageHandler=null;
+					ToolHandler.GetInstence().imagehandler=null;
+					ToolHandler.GetInstence().Dispose();
+					if(filehandler.fileList[0].dicomParser){
+						filehandler.fileList[0].dicomParser.dicomElements= {};
+						filehandler.fileList[0].dicomParser.numberOfItems = 0;
+						filehandler.fileList[0].dicomParser.pixelBuffer.length = 0;
+						filehandler.fileList[0].dicomParser=null;
+					}
+					if(typeof(Module)!="undefined")
+					{
+						Module = null;
+					}
+					filehandler.canvas = null;
+					filehandler.context = null;
+					filehandler.parentElement = null;
+				}
 				var filesArray = [f];
 				clear();
 				filehandler = FileHandler.GetInstence();
-                filehandler.SetElements(angularCanvas[0], element[0], fileChangeUpdate);
+				filehandler.SetElements(angularCanvas[0], element[0], fileChangeUpdate);
                 filehandler.InitializeFiles(filesArray);
                 filehandler.SetDisplayFile(0);
                 imagehandler = filehandler.GetCurrentImageHandler();
@@ -316,7 +434,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
             //            var clearButton = angular.element(document.getElementById(attrs["clearbuttonid"]));
             var clear = function () {
                 imagehandler = null;
-                scope.$apply(function () {
+               // scope.$apply(function () {
                     scope.Tag = [];
                     scope.PatientName = "";
                     scope.PatientId = "";
@@ -324,7 +442,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                     scope.WCenter = "";
                     scope.Rmin = 0;
                     scope.Rmax = 100;
-                });
+                //});
                 tags = null;
                 if (angularCanvas)
                     angularCanvas[0].width = angularCanvas[0].width;
@@ -1418,6 +1536,19 @@ var ToolHandler = (function () {
         this.transformationTool.SetImageHandler(this.imagehandler);
         return this.transformationTool;
     };
+	/**
+    * Dispose internal reference in tool
+    * @method Dispose
+    * @return 
+    */
+    ToolHandler.prototype.Dispose = function () {
+		this.annotationTool.imageHandler =null;
+		this.annotationTool.imageData =null;
+		this.windowLevelTool.imageHandler =null;
+        this.transformationTool.imageHandler =null;
+        this.transformationTool.imageData =null;
+		this.filterTool.imageHandler =null;
+    };
     var instence = null
     /**
     * Returns single instence of ToolHandler
@@ -1448,6 +1579,7 @@ var FileHandler = (function () {
         this.callBack = null;
         this.index = 0;
         this.remoteFile = false
+		
     }
     /**
     * To Set elements need to process
@@ -1509,15 +1641,17 @@ var FileHandler = (function () {
         var parentElement = this.parentElement
         var callback = this.callBack;
         //event call back of  FileReader Api
+		var onerror = function(){this.fileList.length = 0; callback(false);}.bind(this);
         reader.onloadend = function (evt) {
             try {
                 if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-                    byteArray = evt.target.result;
+                    var byteArray = evt.target.result;
                     // DICOM parser
                     var dicomParser = new dwv.dicom.DicomParser();
                     // parse the buffer
                     dicomParser.parse(byteArray);
                     //image.view object
+					byteArray=null;
                     view = dicomParser.createImage();
                     tags = dicomParser.dicomElements;
                     var img = view.getImage();
@@ -1527,7 +1661,7 @@ var FileHandler = (function () {
 
                     parentElement.style.width = (canvas.width) + 'px';
                     parentElement.style.height = (canvas.height) + 'px';
-
+					fileListObj.dicomParser = dicomParser;
                     fileListObj.ImageHandler.SetViewer(view);
                     fileListObj.ImageHandler.SetTag(tags);
                     fileListObj.ImageHandler.SetCanvas(canvas);
@@ -1539,6 +1673,7 @@ var FileHandler = (function () {
             }
             catch (ex) {
                 alert(ex.message);
+				onerror();
             }
         };
         reader.readAsArrayBuffer(fileListObj.FileObj);
@@ -1575,7 +1710,7 @@ var FileHandler = (function () {
 
             parentElement.style.width = (canvas.width) + 'px';
             parentElement.style.height = (canvas.height) + 'px';
-
+			fileListObj.dicomParser = dicomParser;
             fileListObj.ImageHandler.SetViewer(view);
             fileListObj.ImageHandler.SetTag(tags);
             fileListObj.ImageHandler.SetCanvas(canvas);
@@ -2389,7 +2524,7 @@ dwv.dicom.DicomParser.prototype.createImage = function()
     else {
         view.setWindowLevelMinMax();
     }
-
+	buffer.length = 0;
     return view;
 };
 
@@ -4780,7 +4915,9 @@ dwv.image.Image = function(size, spacing, buffer, slicePositions)
         buffer = newBuffer;
         originalBuffer = new Int16Array(newBuffer);
     };
-    
+    this.setOriginalBuffer = function(val){
+		originalBuffer = val;
+	};
     /**
      * Get the data range.
      * @method getDataRange

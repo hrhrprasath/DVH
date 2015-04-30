@@ -87,6 +87,13 @@
         <script type="text/javascript" src="js/Explorer.js"></script>
         <script type="text/javascript" src="js/openjpeg.js"></script>
         <script type="text/javascript">
+		var console={};
+		console.log=function(msg){
+		alert("log: "+msg)
+		};
+		console.warn=function(msg){
+		alert("warn: "+msg)
+		};
 		angular.module('dvh', ['ngdicomviewer'/*,'iconic','ngCordova'*/])
 		 .controller('ctrl', function($scope, /*$cordovaFile,*/$rootScope,$timeout) {
 			$scope.explore =false;
