@@ -89,14 +89,23 @@
         <script type="text/javascript">
 		var console={};
 		console.log=function(msg){
-		alert("log: "+msg)
+			//alert("log: "+msg)
 		};
 		console.warn=function(msg){
-		alert("warn: "+msg)
+			//alert("warn: "+msg)
 		};
-		angular.module('dvh', ['ngdicomviewer'/*,'iconic','ngCordova'*/])
-		 .controller('ctrl', function($scope, /*$cordovaFile,*/$rootScope,$timeout) {
-			$scope.explore =false;
+		angular.module('dvh', ['ngdicomviewer','ionic'/*,'ngCordova'*/])
+		 .controller('ctrl', function($scope,$ionicLoading, /*$cordovaFile,*/$rootScope,$timeout) {
+			$scope.show = function() {
+				$ionicLoading.show({
+				  template: 'Loading...'
+				});
+			}.bind(this);
+			$scope.hide = function(){
+				$ionicLoading.hide();
+			}.bind(this);
+			$scope.show();
+		    $scope.explore =false;
 			$scope.showTools = true;
 			$scope.urll=true;
 			$scope.$watch('loadFile',function(){
@@ -109,47 +118,61 @@
 			var callBack = function(dirs,files,file)
 			{
 			try{
-				if(dirs && files){
-				$scope.$apply(function(){
-					$scope.dirs =dirs;
-					$scope.files =files;
-				});
-				}
-				if(file)
-				{
+			
+					if(dirs && files){
 					$scope.$apply(function(){
-						$scope.explore =false;
-						$scope.showTools = true;
+						$scope.dirs =dirs;
+						$scope.files =files;
 					});
-					$timeout(function(){$scope.$apply(function(){
-					try{
-							$scope.loadFile(file);
-						}
-						catch(e)
+					}
+					
+					if(file)
+					{
+						if($scope.$$phase){
+							$scope.explore =false;
+							$scope.showTools = true;
+						}else
 						{
-							alert(e.message);
+						$scope.$apply(function(){
+							$scope.explore =false;
+							$scope.showTools = true;
+						});
 						}
-					})},150);
-				}
+						$timeout(function(){$scope.$apply(function(){
+						try{
+								$scope.show();
+								$scope.loadFile(file);
+								
+							}
+							catch(e)
+							{
+								console.log(e.message);
+							}
+						})},150);
+					}
+					
 				}
 				catch(e)
 				{
-				alert("Update erroe:"+e.message)
+					console.log("Update erroe:"+e.message)
 				}
+				$scope.hide();
 			}.bind(this);
 			explorer.UpdateScope = callBack;
 			document.addEventListener("deviceready",function() {
 			try{
 				explorer.getFileSystem();
+				$scope.hide();
 				}
 				catch(e)
 				{
-				alert(e.message);
+				console.log(e.message);
 				}
 			}, false);
 			$rootScope.OpenSelectedItem = function(name,type)
 			{
 				explorer.getActiveItem(name, type);
+				$scope.show();
 			}
 			$scope.back = function()
 			{
