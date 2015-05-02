@@ -353,6 +353,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 			$rootScope.loadFile = function (f) {
 				angularCanvas[0].width = 1;
 				angularCanvas[0].height = 1;
+				scope.show();
 				if(imagehandler){
 					if(imagehandler.viewer){
 						imagehandler.viewer.getRescaleLut().initialise([]);

@@ -72,7 +72,7 @@
 			<dicomviewer  fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn"   ></dicomviewer>
 			</div>
 			<div  ng-show="explore" class="button button-dark" ng-click="back();" style="margin:5px;margin-top:48px"> back </div>
-			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:100%;overflow-y:auto;height:78%;display:block;position:absolute">
+			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:100%;overflow-y:auto;height:100%;display:block;position:absolute">
 				<div class="item item-divider" style="background-color:black;color:white">
 				 Folders:
 				 </div>
@@ -172,7 +172,7 @@
 			$rootScope.OpenSelectedItem = function(name,type)
 			{
 				explorer.getActiveItem(name, type);
-				$scope.show();
+				//$scope.show();
 			}
 			$scope.back = function()
 			{
