@@ -48,7 +48,7 @@
 		</div>
 
 		<div ng-show ="showTools" class="row has-header " style="background-color:black;margin-top:43px">
-			  <div class="col "><img src="icons/cir.png"  ng-click="SelectedMouseTool='circle';" /></div>
+			  <div class="col "><img src="icons/cir.png"  ng-click="SelectedMouseTool='circle';"  ng-class="SelectedMouseTool=='circle' ? 'toolmbtnclicked':''"/></div>
 			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line';"  ng-class="SelectedMouseTool=='line' ? 'toolmbtnclicked':''"/></div>
 			  <div class="col "><img src="icons/rect.png" ng-click="SelectedMouseTool='rectangular';"  ng-class="SelectedMouseTool=='rectangular' ? 'toolmbtnclicked':''"/></div>
 			  <div class="col "><img src="icons/ele.png" ng-click="SelectedMouseTool='ellipse';"  ng-class="SelectedMouseTool=='ellipse' ? 'toolmbtnclicked':''"/></div>
