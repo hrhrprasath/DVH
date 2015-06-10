@@ -276,6 +276,10 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 						angularCanvas[0].width= imagehandler.zoomX*angularCanvas[0].width;
 						angularCanvas[0].height= imagehandler.zoomY*angularCanvas[0].height;
 						imagehandler.ApplyCurrentTransformation();
+						if(imagehandler.zoomX == zwh && angularCanvas[0].width < (document.body.clientWidth-15) )
+						{
+							angularCanvas[0].style.left = (((document.body.clientWidth-15)/2) - (angularCanvas[0].width/2) ) + 'px'
+						}
 					}
 					catch(e)
 					{
