@@ -249,7 +249,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 scope.$apply(function () {
 				//alert("New Image");
 				try{
-						scope.Tag = imagehandler.GetFilteredTags();
+						/* scope.Tag = imagehandler.GetFilteredTags();
 						if(imagehandler.tag.PatientName)
 						 scope.PatientName = imagehandler.tag.PatientName.value.toString();
 						else
@@ -262,7 +262,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 						scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
 						scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
 						scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
-						scope.Tval = imagehandler.thresholdRange;
+						scope.Tval = imagehandler.thresholdRange; */
 						wd=parseFloat(angularCanvas[0].width);
 						hi = parseFloat(angularCanvas[0].height);
 						var zwd =(document.body.clientWidth-10)/wd;

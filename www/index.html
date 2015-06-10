@@ -9,8 +9,8 @@
 			width:100%;
 			height:100%;
 			margin:0px;
-			pading:0px;
-			overflow:hide;
+			padding:0px;
+			overflow:hidden;
 			position: fixed;
 			background-color:#444;
 			-webkit-touch-callout: none;
@@ -23,6 +23,12 @@
 		.fxd{
 			position: fixed;
 		}
+		.toolmbtnclicked
+		{
+			border-color:  #0185c1;
+			-webkit-box-shadow: 0 0 2px 1px rgba(0,0,0,0.5);
+			box-shadow: 0 0 2px 3px  #0185c1;
+		}
 		</style>
     
   <title>DICOM VIEWER HTML5</title>
@@ -31,23 +37,23 @@
 	
 		<div class="bar bar-dark fxd">
 			<div class="buttons">
-				<button class="button" ng-click="explore = true; showTools = false;urll=false ">explore</button>
-				<button class="button" ng-click="showTools = true; explore =false;urll=false">Tools</button>
+				<button class="button ion-android-folder" ng-click="explore = true; showTools = false;urll=false "></button>
+				<button class="button ion-image" ng-click="showTools = true; explore =false;urll=false"></button>
 			</div>
 			<h1 class="title" >DVH</h1>
 			<div class="buttons">
-				<button class="button" ng-click="showTools = false; explore = false;urll=true;" >Open</button>
+				<button class="button ion-cloud" ng-click="showTools = false; explore = false;urll=true;" ></button>
 			</div>
 			
 		</div>
 
 		<div ng-show ="showTools" class="row has-header " style="background-color:black;margin-top:43px">
-			  <div class="col "><img src="icons/cir.png" ng-click="SelectedMouseTool='circle';"/></div>
-			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line';"/></div>
-			  <div class="col "><img src="icons/rect.png" ng-click="SelectedMouseTool='rectangular';"/></div>
-			  <div class="col "><img src="icons/ele.png" ng-click="SelectedMouseTool='ellipse';"/></div>
-			  <div class="col "><img src="icons/wl.png" ng-click="SelectedMouseTool='WindowLevel';"/></div>
-			  <div class="col "><img src="icons/plane.png" ng-click="SelectedButtonTool='plain';"/></div>
+			  <div class="col "><img src="icons/cir.png"  ng-click="SelectedMouseTool='circle';" /></div>
+			  <div class="col "><img src="icons/line.png" ng-click="SelectedMouseTool='line';"  ng-class="SelectedMouseTool=='line' ? 'toolmbtnclicked':''"/></div>
+			  <div class="col "><img src="icons/rect.png" ng-click="SelectedMouseTool='rectangular';"  ng-class="SelectedMouseTool=='rectangular' ? 'toolmbtnclicked':''"/></div>
+			  <div class="col "><img src="icons/ele.png" ng-click="SelectedMouseTool='ellipse';"  ng-class="SelectedMouseTool=='ellipse' ? 'toolmbtnclicked':''"/></div>
+			  <div class="col "><img src="icons/wl.png" ng-click="SelectedMouseTool='WindowLevel';"  ng-class="SelectedMouseTool=='WindowLevel' ? 'toolmbtnclicked':''"/></div> 
+			  <div class="col "><img src="icons/plane.png" ng-click="SelectedButtonTool='plain';" /></div>
 			  <div class="col "><img src="icons/Ivt.png" ng-click="SelectedButtonTool='invplain';"/></div>
 		</div>
 		<div ng-show ="showTools" class="row " style="background-color:black">
@@ -71,8 +77,8 @@
 			<div style="top:150px;left:5px;position:absolute" >
 			<dicomviewer  fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn"   ></dicomviewer>
 			</div>
-			<div  ng-show="explore" class="button button-dark" ng-click="back();" style="margin:5px;margin-top:48px"> back </div>
-			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:100%;overflow-y:auto;height:100%;display:block;position:absolute">
+			<button  ng-show="explore" class="button button-dark ion-arrow-left-c fxd" ng-click="back();" style="margin-top:48px;z-index:50;color:whitesmoke;min-width:0px;min-height:0px;line-height:normal;font-size:30px; padding:0px;opacity: 0.6;" ></button>
+			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:99%;overflow-y:auto;height:80%;display:block;position:absolute;margin:5px;margin-top:43px;z-index:45">
 				<div class="item item-divider" style="background-color:black;color:white">
 				 Folders:
 				 </div>
@@ -172,7 +178,7 @@
 			$rootScope.OpenSelectedItem = function(name,type)
 			{
 				explorer.getActiveItem(name, type);
-				//$scope.show();
+				$scope.show();
 			}
 			$scope.back = function()
 			{
