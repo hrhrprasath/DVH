@@ -1,7 +1,7 @@
 ﻿var ngDicomViewer = angular.module('ngdicomviewer', []);
 var dwv = dwv || {};
 dwv.dicom = dwv.dicom || {};
-ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope,$window) {
+ngDicomViewer.directive("dicomviewer",['$document', '$compile', '$rootScope','$window', function ($document, $compile, $rootScope,$window) {
     return {
         restrict: "E",
         link: function (scope, element, attrs) {
@@ -249,7 +249,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
                 scope.$apply(function () {
 				//alert("New Image");
 				try{
-						/* scope.Tag = imagehandler.GetFilteredTags();
+						scope.Tag = imagehandler.GetFilteredTags();
 						if(imagehandler.tag.PatientName)
 						 scope.PatientName = imagehandler.tag.PatientName.value.toString();
 						else
@@ -260,7 +260,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 						 scope.PatientId = "";
 						scope.WWidth = imagehandler.GetViewer().getWindowLut().getWidth();
 						scope.WCenter = imagehandler.GetViewer().getWindowLut().getCenter();
-						scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
+						/*scope.Rmin = imagehandler.GetViewer().getImage().getDataRange().min;
 						scope.Rmax = imagehandler.GetViewer().getImage().getDataRange().max;
 						scope.Tval = imagehandler.thresholdRange; */
 						wd=parseFloat(angularCanvas[0].width);
@@ -469,7 +469,7 @@ ngDicomViewer.directive("dicomviewer", function ($document, $compile, $rootScope
 
         }
     };
-});
+}]);
 
 /*********************
 Summary:

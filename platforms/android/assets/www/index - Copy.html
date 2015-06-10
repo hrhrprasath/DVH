@@ -10,7 +10,7 @@
 			height:100%;
 			margin:0px;
 			padding:0px;
-			overflow:hidden;
+			overflow:auto;
 			position: fixed;
 			background-color:#444;
 			-webkit-touch-callout: none;
@@ -82,22 +82,25 @@
 			Search:
 			</div>
 			<input ng-show="info" type="text" style="top:45px;left:26%;position:absolute;height:20px;display:block;z-index:45;background-color:white;border:1px solid black;"ng-model = "search" />
-			<div ng-show="info" style="top:65px;left:5px;position:absolute;overflow:auto;height:calc(100% - 65px);width:99%;display:block;z-index:45;background-color:white" >
-				<div ng-show="Tag" style="height:20px; min-width: 100%;position:relative;display:table-row">
-					<span style="display: table-cell; text-align: center;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid" >Name&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>
-         <!-- <span style="display: table-cell; text-align: center;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid" >Tag</span> -->
-         <span style="display: table-cell;text-align: left;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid" >&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Value&emsp;&emsp;&emsp;</span>
+			<div ng-show="info" style="top:65px;left:5px;position:absolute;overflow:auto;height:calc(100% - 65px);max-width:99%;display:block;z-index:45;background-color:white" >
+			
+			   <div ng-show="Tag" style="height:20px; min-width: 100%;position:relative;display:table-row">
+				<span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >	
+					Name:&emsp;Value
+				</span>
+			   </div>
+
+			   <div ng-repeat = "tagObj in Tag | filter:search" style="width: 100%;position:relative;display:table-row;">
+			   <div style="border-bottom: #898888 1px solid;display:inline-block" >	
+			    <b>{{tagObj.Name}}:</b>&emsp;<i>{{tagObj.Value}}</i>
 				</div>
-				<div ng-show="Tag" style="height:calc(100% - 95px); width:99%;overflow-y:auto;display:block;position:absolute;display:block">
-				   <div ng-repeat = "tagObj in Tag | filter:search" style="position:relative;display:table-row;">
-						<!-- <div style="border-bottom: #898888 1px solid;" >	
-							<b>{{tagObj.Name}}:</b>&emsp;<i>{{tagObj.Value}}</i>
-						</div> -->
-						<span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >{{tagObj.Name}}</span>
-        <!--  <span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >{{tagObj.TagStr}}</span> -->
-         <span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >{{tagObj.Value}}</span>
-				   </div>
-				</div>
+				<!--  <div style="overflow: hidden;border-bottom: #898888 1px solid;max-width:40%;float:left;" >
+				 {{tagObj.Name}}</div> -->
+				 <!-- <span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >		
+				 {{tagObj.TagStr}}</span> -->
+				 <!-- <div style="overflow: hidden;border-bottom: #898888 1px solid;max-width:60%;float:left;" >
+				 {{tagObj.Value}}</div> -->
+			   </div>
 			</div>
 			<div style="top:152px;left:5px;max-width:60%;color:#ffcc99;background:transparent;font-family:'Courier New', Courier, monospace;font-style:bold;" class="fxd" ng-show="Tag.length"ng-clock>name:{{PatientName}}<br>id:{{PatientId}}
 			</div>

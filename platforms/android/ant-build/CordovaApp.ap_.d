@@ -35,6 +35,7 @@ C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\css \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\fonts \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\icons \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\img \
+C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\index - Copy.html \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\index.html \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\js \
 C:\Users\Hari\Documents\GitHub\DVH\platforms\android\assets\www\plugins \
