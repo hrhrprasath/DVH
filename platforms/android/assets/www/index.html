@@ -127,8 +127,18 @@
 			
 					if(dirs && files){
 					$scope.$apply(function(){
-						$scope.dirs =dirs;
-						$scope.files =files;
+					    $scope.dirs = dirs;
+					    var filterdFiles = [];
+					    for (var i = 0, length = files.length ; i < length; i++) {
+					        var splitedName = files[i].name.split('.');
+                            
+					        if (splitedName[splitedName.length - 1] == "dic"
+                                || splitedName[splitedName.length - 1] == "dcm"
+                                || splitedName[splitedName.length - 1] == ""
+                                || splitedName[splitedName.length - 1] == files[i].name)
+					        filterdFiles.push(files[i]);
+					    }
+					    $scope.files = filterdFiles;
 					});
 					}
 					
