@@ -285,7 +285,7 @@ ngDicomViewer.directive("dicomviewer",['$document', '$compile', '$rootScope','$w
 					{
 						console.log("FC UPdate ex: "+e.message);
 					}
-
+					//scope.hide();
                 });
 				}
 				else{
@@ -357,7 +357,7 @@ ngDicomViewer.directive("dicomviewer",['$document', '$compile', '$rootScope','$w
 			$rootScope.loadFile = function (f) {
 				angularCanvas[0].width = 1;
 				angularCanvas[0].height = 1;
-				scope.show();
+				//scope.show();
 				if(imagehandler){
 					if(imagehandler.viewer){
 						imagehandler.viewer.getRescaleLut().initialise([]);
