@@ -452,6 +452,7 @@ ngDicomViewer.directive("dicomviewer",['$document', '$compile', '$rootScope','$w
                 tags = null;
                 if (angularCanvas)
                     angularCanvas[0].width = angularCanvas[0].width;
+				angularCanvas[0].style.left ='0px';
 
             }
             //            if (clearButton)

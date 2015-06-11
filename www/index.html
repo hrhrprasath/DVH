@@ -19,6 +19,7 @@
 			-moz-user-select: none;
 			-ms-user-select: none;
 			user-select: none;
+			font-family:'Courier New', Courier, monospace !important;
 		}
 		.fxd{
 			position: fixed;
@@ -42,7 +43,7 @@
 			</div>
 			<h1 class="title" style="font-family:'Courier New', Courier, monospace">DVH</h1>
 			<div class="buttons">
-				<button class="button ion-information-circled" ng-click="showTools = false; explore = false;urll=false;info=true" ></button>
+				<button ng-show="Tag.length" class="button ion-information-circled" ng-click="showTools = false; explore = false;urll=false;info=true" ></button>
 				<button class="button ion-cloud" ng-click="showTools = false; explore = false;urll=true;info=false" ></button>
 			</div>
 			
@@ -78,34 +79,36 @@
 			<div  style="top:150px;left:5px;position:absolute" >
 			<dicomviewer  fileutilityid ="" urllistid="file" urlopenbtnid="urlbtn"   ></dicomviewer>
 			</div>
-			<div ng-show="info" style="top:45px;left:5px;width:25%;position:absolute; height:20px;display:block;z-index:45;background-color:white" >
-			Search:
+			<div ng-show="info" style="top:45px;left:0px;width:26%;position:absolute; height:30px;display:block;z-index:45;background-color:white;padding:2px;" >
+			<b>&emsp;Search:</b>
 			</div>
-			<input ng-show="info" type="text" style="top:45px;left:26%;position:absolute;height:20px;display:block;z-index:45;background-color:white;border:1px solid black;"ng-model = "search" />
-			<div ng-show="info" style="top:65px;left:5px;position:absolute;overflow:auto;height:calc(100% - 65px);width:99%;display:block;z-index:45;background-color:white" >
-				<div ng-show="Tag" style="height:20px; min-width: 100%;position:relative;display:table-row">
-					<span style="display: table-cell; text-align: center;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid" >Name&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>
+			<div ng-show="info" style="top:45px;left:26%;position:absolute;height:30px;display:block;z-index:45;background-color:white;width:73%;padding:0px;margin:0px">
+			<input ng-show="info" type="text" style="width:50%;background-color:white;border:1px solid black;padding:0px;margin:0px;height:90%;position:absolute;font-size:15px;top:5%" ng-model = "search" />
+			</div>
+			<div ng-show="info" style="top:75px;left:0px;position:absolute;overflow:auto;height:calc(100% - 75px);width:99%;display:block;z-index:45;background-color:white;padding:5px" >
+				<div ng-show="Tag.length" style="height:20px; min-width: 100%;position:relative;display:inline-block">
+					<span style="display: inline-block; text-align: center;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid;width:100%" >Name&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Value</span>
          <!-- <span style="display: table-cell; text-align: center;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid" >Tag</span> -->
-         <span style="display: table-cell;text-align: left;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid" >&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Value&emsp;&emsp;&emsp;</span>
+       <!--   <span style="display: inline-block;text-align: right;font: normal normal bold 1em/normal 'Times New Roman', Times, serif;border-bottom: #898888 1px solid;width:51%;float:left" >Value</span> -->
 				</div>
-				<div ng-show="Tag" style="height:100% ; width:99%;overflow-y:auto;display:block;position:absolute;display:block">
+				<div ng-show="Tag.length" style="height:100% ; width:99%;overflow-y:auto;display:block;position:absolute;display:block">
 				   <div ng-repeat = "tagObj in Tag | filter:search" style="position:relative;display:table-row;">
 						<!-- <div style="border-bottom: #898888 1px solid;" >	
 							<b>{{tagObj.Name}}:</b>&emsp;<i>{{tagObj.Value}}</i>
 						</div> -->
-						<span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >{{tagObj.Name}}</span>
+						<span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" ><b>{{tagObj.Name}}</b></span>
         <!--  <span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >{{tagObj.TagStr}}</span> -->
          <span style="display: table-cell;overflow: hidden;border-bottom: #898888 1px solid" >{{tagObj.Value}}</span>
 				   </div>
 				</div>
 			</div>
-			<div style="top:152px;left:5px;max-width:60%;color:#ffcc99;background:transparent;font-family:'Courier New', Courier, monospace;font-style:bold;" class="fxd" ng-show="Tag.length"ng-clock>name:{{PatientName}}<br>id:{{PatientId}}
+			<div style="top:152px;left:5px;max-width:60%;color:#ffcc99;background:transparent;font-family:'Courier New', Courier, monospace;font-style:bold;" class="fxd" ng-show="Tag.length"ng-clock>Name:{{PatientName}}<br>Id:{{PatientId}}
 			</div>
-			<div style="top:152px;left:77%;max-width:23%;color:#ffcc99;background:transparent;font-family:'Courier New', Courier, monospace;font-style:bold;text-align:right;" class="fxd" ng-show="Tag.length" ng-clock>w:{{WWidth}}<br>c:{{WCenter}}
+			<div style="top:152px;left:77%;max-width:23%;color:#ffcc99;background:transparent;font-family:'Courier New', Courier, monospace;font-style:bold;text-align:right;" class="fxd" ng-show="Tag.length" ng-clock>W:{{WWidth}}<br>C:{{WCenter}}
 			</div>
 			
 			<button  ng-show="explore" class="button button-dark ion-arrow-left-c fxd" ng-click="back();" style="margin-top:48px;z-index:50;color:whitesmoke;min-width:0px;min-height:0px;line-height:normal;font-size:30px; padding:0px;opacity: 0.6;" ></button>
-			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:99%;overflow-y:auto;height:80%;display:block;position:absolute;margin:5px;margin-top:43px;z-index:45">
+			<div  ng-show="explore" class = "list" style="padding-top: 15px;width:99%;overflow-y:auto;height:calc(100% - 43px);display:block;position:absolute;margin:0px;margin-top:43px;z-index:45;padding:10px">
 				<div class="item item-divider" style="background-color:black;color:white">
 				 Folders:
 				 </div>
