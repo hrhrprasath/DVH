@@ -36,13 +36,13 @@
     <body ng-app="dvh" ng-controller="ctrl" >
 		<div class="bar bar-dark fxd">
 			<div class="buttons">
-				<button class="button ion-android-folder" ng-click="explore = true; showTools = false;urll=false;info=false "></button>
-				<button class="button ion-image" ng-click="showTools = true; explore =false;urll=false;info=false"></button>
+				<button class="button ion-android-folder" ng-click="explore = true; showTools = false;urll=false;info=false;about=false "></button>
+				<button class="button ion-image" ng-click="showTools = true; explore =false;urll=false;info=false;about=false"></button>
 			</div>
-			<h1 class="title" style="font-family:'Courier New', Courier, monospace">DVH</h1>
+			<h1 class="title" style="font-family:'Courier New', Courier, monospace" ng-click="showTools = false; explore = false;urll=false;info=false;about=true">DVH</h1>
 			<div class="buttons">
-				<button ng-show="Tag.length" class="button ion-information-circled" ng-click="showTools = false; explore = false;urll=false;info=true" ></button>
-				<button class="button ion-cloud" ng-click="showTools = false; explore = false;urll=true;info=false" ></button>
+				<button ng-show="Tag.length" class="button ion-information-circled" ng-click="showTools = false; explore = false;urll=false;info=true;about=false" ></button>
+				<button class="button ion-cloud" ng-click="showTools = false; explore = false;urll=true;info=false;about=false" ></button>
 			</div>
 		</div>
 		<div ng-show ="showTools" class="row has-header " style="background-color:black;margin-top:43px">
@@ -106,6 +106,16 @@
 			 Files
 			</div>
 			<div class="button" ng-repeat="i in files" ng-click="OpenSelectedItem(i.name,'f')" style="width:100%;text-align:left;overflow:hidden">{{i.name}}</div>
+		</div>
+		<!-- ABOUT -->
+		<div ng-show="about" style="top:45px;left:0px;width:100%;height:calc(100% - 45px);position:absolute; display:block;z-index:60;background-color:white;padding:15px;overflow-y:auto" >
+			<h1 class="title" >ABOUT</h1>
+			<p>
+				This is an opensoure Free Dicom Viewer based on html5.
+				This app is not intended for clinical or diagnostic use. Any use of this viewer for diagnosis or in a clinical setting is strongly discouraged and should avoided. This app is provided “as is” without warranty of any kind, either expressed or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement. In no event shall author is liable for any special, incidental, indirect or consequential damages of any kind, or any damages whatsoever resulting from the use of this app, data or technical information accessed and viewed with this app, whether or not advised of the possibility of damage, under any theory of liability, arising out of or in connection with the use or performance of this app.
+				For more info visit official site 
+				
+			</p>
 		</div>
         <script type="text/javascript" src="js/ionic.bundle.min.js"></script>
         <script type="text/javascript" src="js/NgDicomViewer.js"></script>
