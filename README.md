@@ -1,6 +1,6 @@
 DVH
 ===
-DVH [Dicom Viewer Html5]is an cordova driven android app to view dicom images.Based on the angular app ng-dicomviewer
+DVH [Dicom Viewer Html5]is a cordova driven android app to view dicom images.Based on the angular app ng-dicomviewer
 which is capable of viewing dicom images from the phone memory.Designed to use it simpler and easier.
 
 Not fully DICOM compliant, see <a href="https://github.com/ivmartel/dwv/wiki/Dicom-Support">Dicom-Support</a> for details
